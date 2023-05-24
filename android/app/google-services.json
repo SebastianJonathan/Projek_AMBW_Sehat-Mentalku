@@ -1,0 +1,155 @@
+{
+  "project_info": {
+    "project_number": "125727304816",
+    "project_id": "sehatmentalku-d56af",
+    "storage_bucket": "sehatmentalku-d56af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125727304816:android:c1816394dada820c45d8b5",
+        "android_client_info": {
+          "package_name": "com.example.appsehat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN1zwmOhDs49DG6P29-_nifXBYg7yqXUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125727304816:android:f63d94135003cdb445d8b5",
+        "android_client_info": {
+          "package_name": "com.example.gtk_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN1zwmOhDs49DG6P29-_nifXBYg7yqXUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125727304816:android:ee6841b9546bf77345d8b5",
+        "android_client_info": {
+          "package_name": "com.example.sehat_mentalku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN1zwmOhDs49DG6P29-_nifXBYg7yqXUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125727304816:android:9a71246905841d2145d8b5",
+        "android_client_info": {
+          "package_name": "com.example.sehatmentalku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN1zwmOhDs49DG6P29-_nifXBYg7yqXUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125727304816:android:e3729a1fb1abc2a145d8b5",
+        "android_client_info": {
+          "package_name": "com.example.shrine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN1zwmOhDs49DG6P29-_nifXBYg7yqXUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125727304816-4p0bqs3lvma1ju34r958tfgg6558sv0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
