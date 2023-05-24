@@ -19,6 +19,50 @@ void main() async {
   );
 }
 
+class WaitingRoom extends StatelessWidget {
+  const WaitingRoom({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Waiting...'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection("pairingCurhat").snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+          if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+            return Text("No data available");
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String namaPendengar = data['Pendengar'];
+              String namaCurhat = data['Curhat'];
+              bool firstTime = true;
+              if(namaPendengar == loggedIn){
+                return Text('Dapat Pencurhat, Namanya ' + namaCurhat);
+              }else{
+                if(firstTime == true){
+                  firstTime = false;
+                  return Text('Please Wait.....');
+                }else{
+                  return Text(' ');
+                }
+              }
+            },
+          );
+        },
+      )
+    );
+  }
+}
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -275,7 +319,22 @@ class Curhat extends StatelessWidget {
               SizedBox(height: 20.0,),
               ElevatedButton(
                 onPressed: () {
-                  
+                  CollectionReference users = FirebaseFirestore.instance.collection('listPendengar');
+  
+                  // Example data
+                  Map<String, dynamic> data = {
+                    'User' : loggedIn
+                  };
+
+                  users
+                      .add(data)
+                      .then((value) => print('Data inserted successfully.'))
+                      .catchError((error) => print('Failed to insert data: $error'));
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const WaitingRoom()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(200, 60), 
