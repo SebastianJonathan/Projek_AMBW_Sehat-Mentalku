@@ -6,6 +6,7 @@ import 'dbservices.dart';
 import 'firebase_options.dart';
 
 String loggedIn = "user";
+String lawanChat = "user";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -17,6 +18,114 @@ void main() async {
       home: MyApp(),
     ),
   );
+}
+
+class ChatRoom extends StatelessWidget {
+  const ChatRoom({Key? key});
+
+  @override
+  Widget build(BuildContext context) {
+    final chat = TextEditingController();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Chat Room"),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection("chatCurhat").snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                }
+                if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+                  return Text("No data available");
+                }
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot document = snapshot.data!.docs[index];
+                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                    String namaPengirim = data['Sender'];
+                    String namaPenerima = data['Reciever'];
+                    String chat = data['message'];
+                    if (namaPengirim == loggedIn && namaPenerima == lawanChat) {
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            chat,
+                            style: TextStyle(fontSize: 24.0, color: Colors.white), 
+                          ),
+                        ),
+                      );
+                    } else if (namaPengirim == lawanChat && namaPenerima == loggedIn) {
+                      return Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            chat,
+                            style: TextStyle(fontSize: 24.0, color: Colors.white), 
+                          ),
+                        ),
+                      );
+                    }
+                    return SizedBox();
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: chat,
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan Text Disini...',
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    CollectionReference users = FirebaseFirestore.instance.collection('chatCurhat');
+    
+                    Map<String, dynamic> data = {
+                      'Sender' : loggedIn,
+                      'Reciever' : lawanChat,
+                      'message' : chat.text
+                    };
+
+                    users
+                        .add(data)
+                        .then((value) => print('Data inserted successfully.'))
+                        .catchError((error) => print('Failed to insert data: $error'));
+                    chat.text = "";
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class WaitingRoom extends StatelessWidget {
@@ -46,6 +155,12 @@ class WaitingRoom extends StatelessWidget {
               String namaCurhat = data['Curhat'];
               bool firstTime = true;
               if(namaPendengar == loggedIn){
+                lawanChat = namaCurhat;
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatRoom()),
+                );
                 return Text('Dapat Pencurhat, Namanya ' + namaCurhat);
               }else{
                 if(firstTime == true){
@@ -214,7 +329,23 @@ class listPendengar extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  print('$namaPendengar clicked');
+                  CollectionReference users = FirebaseFirestore.instance.collection('pairingCurhat');
+                  lawanChat = namaPendengar;
+  
+                  Map<String, dynamic> data = {
+                    'Curhat' : loggedIn,
+                    'Pendengar' : namaPendengar
+                  };
+
+                  users
+                      .add(data)
+                      .then((value) => print('Data inserted successfully.'))
+                      .catchError((error) => print('Failed to insert data: $error'));
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChatRoom()),
+                  );
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
