@@ -7,6 +7,7 @@ import 'firebase_options.dart';
 
 String loggedIn = "user";
 String lawanChat = "user";
+int startChat = 1;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -51,6 +52,7 @@ class ChatRoom extends StatelessWidget {
                     String namaPenerima = data['Reciever'];
                     String chat = data['message'];
                     if (namaPengirim == loggedIn && namaPenerima == lawanChat) {
+                      startChat += 1;
                       return Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
@@ -67,6 +69,7 @@ class ChatRoom extends StatelessWidget {
                         ),
                       );
                     } else if (namaPengirim == lawanChat && namaPenerima == loggedIn) {
+                      startChat += 1;
                       return Align(
                         alignment: Alignment.centerRight,
                         child: Container(
@@ -101,10 +104,11 @@ class ChatRoom extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
+                IconButton (
                   icon: Icon(Icons.send),
                   onPressed: () {
                     CollectionReference users = FirebaseFirestore.instance.collection('chatCurhat');
+                    DocumentReference doc = users.doc(startChat.toString());
     
                     Map<String, dynamic> data = {
                       'Sender' : loggedIn,
@@ -112,10 +116,7 @@ class ChatRoom extends StatelessWidget {
                       'message' : chat.text
                     };
 
-                    users
-                        .add(data)
-                        .then((value) => print('Data inserted successfully.'))
-                        .catchError((error) => print('Failed to insert data: $error'));
+                    doc.set(data);
                     chat.text = "";
                   },
                 ),
@@ -129,13 +130,23 @@ class ChatRoom extends StatelessWidget {
 }
 
 class WaitingRoom extends StatelessWidget {
-  const WaitingRoom({super.key});
+  const WaitingRoom({Key? key}) : super(key: key);
+
+  void roomChat(BuildContext context, String namaCurhat) {
+    lawanChat = namaCurhat;
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChatRoom()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool firstTime = true;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Waiting...'),
+        title: const Text('Waiting...'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection("pairingCurhat").snapshots(),
@@ -153,27 +164,24 @@ class WaitingRoom extends StatelessWidget {
               Map<String, dynamic> data = document.data() as Map<String, dynamic>;
               String namaPendengar = data['Pendengar'];
               String namaCurhat = data['Curhat'];
-              bool firstTime = true;
-              if(namaPendengar == loggedIn){
-                lawanChat = namaCurhat;
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChatRoom()),
-                );
-                return Text('Dapat Pencurhat, Namanya ' + namaCurhat);
-              }else{
-                if(firstTime == true){
+
+              if (namaPendengar == loggedIn) {
+                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  roomChat(context, namaCurhat);
+                });
+                return const SizedBox(); // Use SizedBox to replace the empty Text widget
+              } else {
+                if (index == 0 && firstTime) {
                   firstTime = false;
-                  return Text('Please Wait.....');
-                }else{
-                  return Text(' ');
+                  return const Text('Please Wait.....');
+                } else {
+                  return const Text(' ');
                 }
               }
             },
           );
         },
-      )
+      ),
     );
   }
 }
