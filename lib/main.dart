@@ -42,12 +42,60 @@ class FeedbackPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final feedback = TextEditingController();
+    final report = TextEditingController();
     deleteChat();
+    deletePairCurhat();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Rating"),
+        title: Text("Feedback"),
       ),
-      body: Text("Rating Page"),
+      body: Column(
+        children: [
+          Text(
+            "Feedback :"
+          ),
+          SizedBox(height: 10.0,),
+          TextField(
+            controller: feedback,
+            decoration: InputDecoration(
+              hintText: "Masukkan Feedback Disini(Jika Ada)"),
+          ),
+          SizedBox(height: 20.0,),
+          Text(
+            "Report :"
+          ),
+          SizedBox(height: 10.0,),
+          TextField(
+            controller: report,
+            decoration: InputDecoration(
+              hintText: "Masukkan Report Disini(Jika Ada)"),
+          ),
+          ElevatedButton(
+            onPressed: (){
+              CollectionReference users = FirebaseFirestore.instance.collection('tableFeedback');
+              Map<String, dynamic> data = {
+                'User' : loggedIn,
+                'Feedback' : feedback.text
+              };
+              users.add(data);
+              CollectionReference users2 = FirebaseFirestore.instance.collection('tableReport');
+              Map<String, dynamic> data2 = {
+                'User' : loggedIn,
+                'Report' : report.text
+              };
+              users2.add(data2);
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            },
+            child: Text(
+              "Submit"
+            )),
+        ],
+      ),
     );
   }
 }
