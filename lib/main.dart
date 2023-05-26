@@ -21,6 +21,37 @@ void main() async {
   );
 }
 
+class FeedbackPage extends StatelessWidget {
+  const FeedbackPage({super.key});
+
+  void deleteChat() async {
+    final collection = FirebaseFirestore.instance.collection('chatCurhat');
+    final snapshot = await collection.where("Sender", isEqualTo: loggedIn).get();
+    for(final document in snapshot.docs){
+      await document.reference.delete();
+    }
+  }
+
+  void deletePairCurhat() async{
+    final collection = FirebaseFirestore.instance.collection('pairingCurhat');
+    final snapshot = await collection.where("Curhat", isEqualTo: loggedIn).get();
+    for(final document in snapshot.docs){
+      await document.reference.delete();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    deleteChat();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Rating"),
+      ),
+      body: Text("Rating Page"),
+    );
+  }
+}
+
 class ChatRoom extends StatelessWidget {
   const ChatRoom({Key? key});
 
@@ -52,6 +83,16 @@ class ChatRoom extends StatelessWidget {
                     String namaPenerima = data['Reciever'];
                     String chat = data['message'];
                     if (namaPengirim == loggedIn && namaPenerima == lawanChat) {
+                      if(chat == loggedIn + " Sudah Selesai" || chat == lawanChat + " Sudah Selesai"){
+                        WidgetsBinding.instance!.addPostFrameCallback((_) {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                          );
+                        });
+                        return const SizedBox();
+                      }
                       startChat += 1;
                       return Align(
                         alignment: Alignment.centerLeft,
@@ -69,6 +110,16 @@ class ChatRoom extends StatelessWidget {
                         ),
                       );
                     } else if (namaPengirim == lawanChat && namaPenerima == loggedIn) {
+                      if(chat == loggedIn + " Sudah Selesai" || chat == lawanChat + " Sudah Selesai"){
+                        WidgetsBinding.instance!.addPostFrameCallback((_) {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                          );
+                        });
+                        return const SizedBox();
+                      }
                       startChat += 1;
                       return Align(
                         alignment: Alignment.centerRight,
@@ -107,8 +158,9 @@ class ChatRoom extends StatelessWidget {
                 IconButton (
                   icon: Icon(Icons.send),
                   onPressed: () {
+                    DateTime currentTime = DateTime.now();
                     CollectionReference users = FirebaseFirestore.instance.collection('chatCurhat');
-                    DocumentReference doc = users.doc(startChat.toString());
+                    DocumentReference doc = users.doc(currentTime.toString());
     
                     Map<String, dynamic> data = {
                       'Sender' : loggedIn,
@@ -119,6 +171,22 @@ class ChatRoom extends StatelessWidget {
                     doc.set(data);
                     chat.text = "";
                   },
+                ),
+                IconButton(
+                  icon: Icon(Icons.done),
+                  onPressed: (){
+                    DateTime currentTime = DateTime.now();
+                    CollectionReference users = FirebaseFirestore.instance.collection('chatCurhat');
+                    DocumentReference doc = users.doc(currentTime.toString());
+    
+                    Map<String, dynamic> data = {
+                      'Sender' : loggedIn,
+                      'Reciever' : lawanChat,
+                      'message' : loggedIn + " Sudah Selesai"
+                    };
+                    doc.set(data);
+                  },
+                  color: Colors.blue,
                 ),
               ],
             ),
@@ -139,6 +207,13 @@ class WaitingRoom extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (context) => const ChatRoom()),
     );
+  }
+  void deletePendengar() async{
+    final collection = FirebaseFirestore.instance.collection('listPendengar');
+    final snapshot = await collection.where("User", isEqualTo: loggedIn).get();
+    for(final document in snapshot.docs){
+      await document.reference.delete();
+    }
   }
 
   @override
@@ -166,6 +241,7 @@ class WaitingRoom extends StatelessWidget {
               String namaCurhat = data['Curhat'];
 
               if (namaPendengar == loggedIn) {
+                deletePendengar();
                 WidgetsBinding.instance!.addPostFrameCallback((_) {
                   roomChat(context, namaCurhat);
                 });
