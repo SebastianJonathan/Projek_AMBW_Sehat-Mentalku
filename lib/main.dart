@@ -7,7 +7,7 @@ import 'firebase_options.dart';
 
 String loggedIn = "user";
 String lawanChat = "user";
-int startChat = 1;
+String psikologPilihan = "user";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -19,6 +19,187 @@ void main() async {
       home: MyApp(),
     ),
   );
+}
+
+class FormKonsultasi extends StatelessWidget {
+  const FormKonsultasi({super.key});
+  Future<List<Map<String, dynamic>>> getDatas(String collectionName) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+          .collection(collectionName)
+          .get();
+
+      List<Map<String, dynamic>> data = querySnapshot.docs.map<Map<String, dynamic>>((doc) {
+        return doc.data();
+      }).toList();
+      
+      return data;
+    } catch (e) {
+      print('Error fetching data from Firebase: $e');
+      return [];
+    }
+  }
+  
+  SizedBox hitungJam(String jamAwal, TextEditingController text){
+    int jamAkhir = int.parse(jamAwal.substring(0,2));
+    jamAkhir += 1;
+    text.text = jamAkhir.toString() + ".00";
+    return SizedBox(height: 0,);
+  }
+  @override
+  Widget build(BuildContext context) {
+    final jamMulai = TextEditingController();
+    final jamAkhir = TextEditingController();
+    final masalah = TextEditingController();
+    final pesanTambahan = TextEditingController();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Form Konsultasi")
+      ),
+      body: Column(
+        children: [
+          Text("Masukkan Jam Mulai(Format 24 Jam berakhiran .00)"),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: jamMulai,
+            decoration: InputDecoration(
+              hintText: "Masukkan Feedback Disini(Jika Ada)"),
+            onChanged: (value) {
+              if(value.length == 5){
+                hitungJam(jamMulai.text, jamAkhir);
+              }else{
+                jamAkhir.text = "";
+              }
+            },
+          ),
+          SizedBox(height: 20.0,),
+          Text("Jam Berakhir"),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: jamAkhir,
+          ),
+          SizedBox(height: 20.0,),
+          Text("Masukkan Masalah Anda"),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: masalah,
+            decoration: InputDecoration(
+              hintText: "Masukkan Masalah Anda Disini.."),
+          ),
+          SizedBox(height: 20.0,),
+          Text("Masukkan Pesan Tambahan Anda"),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: pesanTambahan,
+            decoration: InputDecoration(
+              hintText: "Masukkan Pesan Anda Disini.."),
+          ),
+          ElevatedButton(
+            onPressed: () async{
+              bool ada = false;
+              List<Map<String, dynamic>> data = await getDatas("listKonsultasi");
+              if(data.isNotEmpty){
+                for(var datas in data){
+                  if(datas['JamMulai'] == jamMulai.text && datas['JamBerakhir'] == jamAkhir.text
+                  && datas['Psikolog'] == psikologPilihan){
+                    ada = true;
+                  }
+                }
+                if(ada == false){
+                  CollectionReference users = FirebaseFirestore.instance.collection('listKonsultasi');
+                  Map<String, dynamic> data = {
+                    'User' : loggedIn,
+                    'Psikolog' : psikologPilihan,
+                    'JamMulai' : jamMulai.text,
+                    'JamBerakhir' : jamAkhir.text,
+                    'Masalah' : masalah.text,
+                    'Pesan' : pesanTambahan.text
+                  };
+
+                  users
+                    .add(data)
+                    .then((value) => print('Data inserted successfully.'))
+                    .catchError((error) => print('Failed to insert data: $error'));
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }
+              }
+            }, 
+            child: Text("Submit"))
+        ]),
+    );
+  }
+}
+
+class ListPsikolog extends StatelessWidget {
+  const ListPsikolog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> jamList = ['09.00 - 10.00', '10.00 - 11.00', '11.00 - 12.00'];
+    String jam = "";
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('List Psikolog'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection("listPsikolog").snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+          if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+            return Text("No data available");
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String namaPsikolog = data['Nama'];
+              String deskripsi = data['Deskripsi'];
+
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      size: 100,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      namaPsikolog,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(deskripsi),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: (){
+                        psikologPilihan = namaPsikolog;
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const FormKonsultasi()),
+                        );
+                                }, 
+                      child: Text("Pesan")),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }
 
 class FeedbackPage extends StatelessWidget {
@@ -141,7 +322,6 @@ class ChatRoom extends StatelessWidget {
                         });
                         return const SizedBox();
                       }
-                      startChat += 1;
                       return Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
@@ -168,7 +348,6 @@ class ChatRoom extends StatelessWidget {
                         });
                         return const SizedBox();
                       }
-                      startChat += 1;
                       return Align(
                         alignment: Alignment.centerRight,
                         child: Container(
@@ -293,7 +472,7 @@ class WaitingRoom extends StatelessWidget {
                 WidgetsBinding.instance!.addPostFrameCallback((_) {
                   roomChat(context, namaCurhat);
                 });
-                return const SizedBox(); // Use SizedBox to replace the empty Text widget
+                return const SizedBox();
               } else {
                 if (index == 0 && firstTime) {
                   firstTime = false;
@@ -311,6 +490,17 @@ class WaitingRoom extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
+  Stream<List<Map<String, dynamic>>> getDatas(String collectionName) {
+    return FirebaseFirestore.instance
+        .collection(collectionName)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map<Map<String, dynamic>>((doc) {
+        return doc.data();
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> listWid = [];
@@ -318,14 +508,6 @@ class HomePage extends StatelessWidget {
       listWid.add(
         ListTile(
           title: Text('History ' + i.toString()),
-        ),
-      );
-    }
-    List<Widget> listWid2 = [];
-    for (int i = 0; i < 10; i++) {
-      listWid2.add(
-        ListTile(
-          title: Text('Appointment ' + i.toString()),
         ),
       );
     }
@@ -341,7 +523,7 @@ class HomePage extends StatelessWidget {
           onPressed: () {
             final RenderBox overlay =
                 Overlay.of(context).context.findRenderObject() as RenderBox;
-            final Offset topLeft = Offset.zero; // Top left corner of the screen
+            final Offset topLeft = Offset.zero;
             showMenu(
               context: context,
               position: RelativeRect.fromLTRB(
@@ -377,6 +559,12 @@ class HomePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => const Curhat()),
                   );
+                } else if (value == 2) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ListPsikolog()),
+                  );
                 }
               }
             });
@@ -394,7 +582,8 @@ class HomePage extends StatelessWidget {
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
-          )),
+            ),
+          ),
           const SizedBox(height: 20.0),
           const Center(
             child: Text(
@@ -409,7 +598,68 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 5.0),
           Container(
             height: 200,
-            child: ListView(children: listWid2),
+            alignment: Alignment.centerLeft,
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: getDatas("listKonsultasi"),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                } else if (snapshot.hasData) {
+                  List<Map<String, dynamic>> dataList = snapshot.data!;
+                  List<Widget> appointmentWidgets = [];
+                  for (var data in dataList) {
+                    String namaPsikolog = data['Psikolog'];
+                    String jamMulai = data['JamMulai'];
+                    String jamAkhir = data['JamBerakhir'];
+                    String user = data['User'];
+                    if (user == loggedIn) {
+                      appointmentWidgets.add(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(10),
+                              child: Text(
+                                "Psikolog: " + namaPsikolog,
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.all(10),
+                              child: Text(
+                                "Akan Mulai Pada " + jamMulai,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.all(10),
+                              child: Text(
+                                "Berakhir pada " + jamAkhir,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }
+                  return Container(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: appointmentWidgets,
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return Text("No data available");
+                }
+              },
+            ),
           ),
           const SizedBox(height: 20.0),
           const Center(
@@ -516,7 +766,7 @@ class Curhat extends StatelessWidget {
           onPressed: () {
             final RenderBox overlay =
                 Overlay.of(context).context.findRenderObject() as RenderBox;
-            final Offset topLeft = Offset.zero; // Top left corner of the screen
+            final Offset topLeft = Offset.zero;
             showMenu(
               context: context,
               position: RelativeRect.fromLTRB(
@@ -584,7 +834,6 @@ class Curhat extends StatelessWidget {
                 onPressed: () {
                   CollectionReference users = FirebaseFirestore.instance.collection('listPendengar');
   
-                  // Example data
                   Map<String, dynamic> data = {
                     'User' : loggedIn
                   };
@@ -699,7 +948,6 @@ class MyApp extends StatelessWidget {
                       break;
                     }
                   }
-                  // Handle the login result
                   if (foundUser) {
                     loggedIn = enteredUsername;
                     Navigator.pop(context);
@@ -715,7 +963,7 @@ class MyApp extends StatelessWidget {
             ],
           ),
           const SizedBox(
-              height: 8.0), // Add appropriate spacing between content
+              height: 8.0),
         ],
       ),
     );
