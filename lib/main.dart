@@ -209,6 +209,7 @@ class ListGroupPage extends StatelessWidget {
                         ElevatedButton(
                           child: const Text('Join'),
                           onPressed: () {
+                            namaGrup = nama;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
