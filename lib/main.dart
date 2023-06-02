@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 String loggedIn = "user";
 String lawanChat = "user";
 String psikologPilihan = "user";
+String namaGrup = "";
 int harga = 0;
 String jamMulaii = "";
 String jamAkhirr = "";
@@ -24,6 +25,329 @@ void main() async {
       home: MyApp(),
     ),
   );
+}
+
+class ChatGroupRoom extends StatelessWidget {
+  const ChatGroupRoom({Key? key});
+
+  @override
+  Widget build(BuildContext context) {
+    final chat = TextEditingController();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Chat Room"),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection("chatGroup").snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                }
+                if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+                  return Text("No data available");
+                }
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot document = snapshot.data!.docs[index];
+                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                    String namaPengirim = data['Sender'];
+                    String namaGroup = data['Group'];
+                    String chat = data['message'];
+
+                    if (namaGroup == namaGrup && namaPengirim == loggedIn) {
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                loggedIn,
+                                style: TextStyle(fontSize: 12.0, color: Colors.white),
+                              ),
+                              SizedBox(height: 4.0),
+                              Text(
+                                chat,
+                                style: TextStyle(fontSize: 24.0, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else if (namaGroup == namaGrup && namaPengirim != loggedIn) {
+                      return Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                namaPengirim,
+                                style: TextStyle(fontSize: 12.0, color: Colors.white),
+                              ),
+                              SizedBox(height: 4.0),
+                              Text(
+                                chat,
+                                style: TextStyle(fontSize: 24.0, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    return SizedBox();
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: chat,
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan Text Disini...',
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    DateTime currentTime = DateTime.now();
+                    CollectionReference users = FirebaseFirestore.instance.collection('chatGroup');
+                    DocumentReference doc = users.doc(currentTime.toString());
+
+                    Map<String, dynamic> data = {
+                      'Sender': loggedIn,
+                      'Group': namaGrup,
+                      'message': chat.text
+                    };
+
+                    doc.set(data);
+                    chat.text = "";
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.done),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ListGroupPage()),
+                    );
+                  },
+                  color: Colors.blue,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ListGroupPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('List Group'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('listGroupForum').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+          if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+            return Text("No data available");
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String nama = data['Nama'];
+              String info = data['Deskripsi'];
+              return Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(
+                        nama,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        info,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    ButtonBar(
+                      children: <Widget>[
+                        ElevatedButton(
+                          child: const Text('Join'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ChatGroupRoom()),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class Forum extends StatelessWidget {
+  const Forum({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Curhat'),
+        backgroundColor: Colors.blue,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            semanticLabel: 'menu',
+          ),
+          onPressed: () {
+            final RenderBox overlay =
+                Overlay.of(context).context.findRenderObject() as RenderBox;
+            final Offset topLeft = Offset.zero;
+            showMenu(
+              context: context,
+              position: RelativeRect.fromLTRB(
+                topLeft.dx,
+                topLeft.dy,
+                overlay.size.width - topLeft.dx,
+                overlay.size.height - topLeft.dy,
+              ),
+              items: [
+                const PopupMenuItem(
+                  child: Text('Home'),
+                  value: 1,
+                ),
+                const PopupMenuItem(
+                  child: Text('Curhat'),
+                  value: 2,
+                ),
+                const PopupMenuItem(
+                  child: Text('Konsultasi Psikolog'),
+                  value: 3,
+                ),
+                const PopupMenuItem(
+                  child: Text('Edit Profile'),
+                  value: 4,
+                ),
+              ],
+              elevation: 8.0,
+            ).then((value) {
+              if (value != null) {
+                if (value == 1) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }
+                if(value == 2){
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Curhat()),
+                  );
+                }
+                if(value == 3){
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ListPsikolog()),
+                  );
+                }
+              }
+            });
+          },
+        ),
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: Align(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ListGroupPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(200, 60), 
+                ),
+                child: Text('Group Chat'),
+              ),
+              SizedBox(height: 20.0,),
+              ElevatedButton(
+                onPressed: () {
+                  
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(200, 60), 
+                ),
+                child: Text('Forum'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(200, 60), 
+                ),
+                child: Text('Artikel'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class PaymentPage extends StatelessWidget {
@@ -698,6 +1022,12 @@ class HomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const ListPsikolog()),
+                  );
+                } else if(value == 3){
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Forum()),
                   );
                 }
               }
