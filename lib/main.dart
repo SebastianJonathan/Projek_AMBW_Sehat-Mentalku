@@ -8,6 +8,11 @@ import 'firebase_options.dart';
 String loggedIn = "user";
 String lawanChat = "user";
 String psikologPilihan = "user";
+int harga = 0;
+String jamMulaii = "";
+String jamAkhirr = "";
+String masalahKu = "";
+String pesanKu = "";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -21,8 +26,7 @@ void main() async {
   );
 }
 
-class FormKonsultasi extends StatelessWidget {
-  const FormKonsultasi({super.key});
+class PaymentPage extends StatelessWidget {
   Future<List<Map<String, dynamic>>> getDatas(String collectionName) async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
@@ -39,6 +43,159 @@ class FormKonsultasi extends StatelessWidget {
       return [];
     }
   }
+  void pesanPsikolog(BuildContext context,String paymentMode) async{
+    bool ada = false;
+    List<Map<String, dynamic>> data = await getDatas("listKonsultasi");
+    if(data.isNotEmpty){
+      for(var datas in data){
+        if(datas['Psikolog'] == psikologPilihan){
+          print('a');
+          if(int.parse(datas['JamMulai'].substring(0,2)) <= int.parse(jamMulaii.substring(0,2)) && int.parse(datas['JamBerakhir'].substring(0,2)) > int.parse(jamMulaii.substring(0,2))){
+            ada = true;
+            if(int.parse(datas['JamMulai'].substring(0,2)) <= int.parse(jamAkhirr.substring(0,2)) && int.parse(datas['JamBerakhir'].substring(0,2)) > int.parse(jamAkhirr.substring(0,2))){
+              ada = true;
+            }
+          }
+        }
+      }
+      if(ada == false){
+        CollectionReference users = FirebaseFirestore.instance.collection('listKonsultasi');
+        Map<String, dynamic> data = {
+          'User' : loggedIn,
+          'Psikolog' : psikologPilihan,
+          'JamMulai' : jamMulaii,
+          'JamBerakhir' : jamAkhirr,
+          'Masalah' : masalahKu,
+          'Pesan' : pesanKu,
+          'PaymentMode' : paymentMode
+        };
+
+        users
+          .add(data)
+          .then((value) => print('Data inserted successfully.'))
+          .catchError((error) => print('Failed to insert data: $error'));
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      }else{
+        AlertDialog(
+          title: Text('Alert'),
+          content: Text('Sudah ada yang booking jam segitu'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      }
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Bayar'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Rincian Transaksi',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(height: 10,),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Psikolog : ' + psikologPilihan,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Jam Mulai : ' + jamMulaii,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Jam Berakhir : ' + jamAkhirr,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Total Harga : ' + harga.toString(),
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  pesanPsikolog(context, "Gopay");
+                },
+                child: Text('GoPay'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  pesanPsikolog(context, "Visa");
+                },
+                child: Text('Visa'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  pesanPsikolog(context, "Mastercard");
+                },
+                child: Text('Mastercard'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  pesanPsikolog(context, "Ovo");
+                },
+                child: Text('OVO'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  pesanPsikolog(context, "Shopeepay");
+                },
+                child: Text('ShopeePay'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FormKonsultasi extends StatelessWidget {
+  const FormKonsultasi({super.key});
   
   SizedBox hitungJam(String jamAwal, TextEditingController text){
     int jamAkhir = int.parse(jamAwal.substring(0,2));
@@ -96,37 +253,14 @@ class FormKonsultasi extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async{
-              bool ada = false;
-              List<Map<String, dynamic>> data = await getDatas("listKonsultasi");
-              if(data.isNotEmpty){
-                for(var datas in data){
-                  if(datas['JamMulai'] == jamMulai.text && datas['JamBerakhir'] == jamAkhir.text
-                  && datas['Psikolog'] == psikologPilihan){
-                    ada = true;
-                  }
-                }
-                if(ada == false){
-                  CollectionReference users = FirebaseFirestore.instance.collection('listKonsultasi');
-                  Map<String, dynamic> data = {
-                    'User' : loggedIn,
-                    'Psikolog' : psikologPilihan,
-                    'JamMulai' : jamMulai.text,
-                    'JamBerakhir' : jamAkhir.text,
-                    'Masalah' : masalah.text,
-                    'Pesan' : pesanTambahan.text
-                  };
-
-                  users
-                    .add(data)
-                    .then((value) => print('Data inserted successfully.'))
-                    .catchError((error) => print('Failed to insert data: $error'));
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                }
-              }
+              harga = (int.parse(jamAkhir.text.substring(0,2)) - int.parse(jamMulai.text.substring(0,2))) * 100000;
+              jamMulaii = jamMulai.text;
+              jamAkhirr = jamAkhir.text;
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PaymentPage()),
+              );
             }, 
             child: Text("Submit"))
         ]),
