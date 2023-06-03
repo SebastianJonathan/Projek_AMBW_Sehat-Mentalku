@@ -14,6 +14,7 @@ String jamMulaii = "";
 String jamAkhirr = "";
 String masalahKu = "";
 String pesanKu = "";
+String judulArticle = "";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -25,6 +26,206 @@ void main() async {
       home: MyApp(),
     ),
   );
+}
+
+class TambahArticle extends StatelessWidget {
+  const TambahArticle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final judul = TextEditingController();
+    final ringkasan = TextEditingController();
+    final isi = TextEditingController();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Article"),
+      ),
+      body: Column(
+        children: [
+          Text("Masukkan Judul Artikel"),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: judul,
+            decoration: InputDecoration(
+              hintText: "Masukkan judul artikel disini.."),
+          ),
+          SizedBox(height: 15.0,),
+          Text("Masukkan Ringkasan Artikel"),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: ringkasan,
+            decoration: InputDecoration(
+              hintText: "Masukkan ringkasan artikel disini.."),
+          ),
+          SizedBox(height: 15.0,),
+          Text("Masukkan Isi Artikel"),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: isi,
+            decoration: InputDecoration(
+              hintText: "Masukkan isi artikel disini.."),
+          ),
+          SizedBox(height: 15.0,),
+          ElevatedButton(
+            onPressed: (){
+              CollectionReference users = FirebaseFirestore.instance.collection('listArticle');
+              Map<String, dynamic> data = {
+                'Judul' : judul.text,
+                'Ringkasan' : ringkasan.text,
+                'Isi' : isi.text
+              };
+
+              users
+                .add(data)
+                .then((value) => print('Data inserted successfully.'))
+                .catchError((error) => print('Failed to insert data: $error'));
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ListArticle()),
+              );
+            },
+            child: Text("Add Article"))
+        ],
+      ),
+    );
+  }
+}
+
+class ViewArticle extends StatelessWidget {
+  const ViewArticle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(judulArticle),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('listArticle').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+          if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+            return Text("No data available");
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String judul = data['Judul'];
+              String isi = data['Isi'];
+              if(judul == judulArticle){
+                return Column(
+                  children: [
+                    Text(
+                      judul,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 15.0,),
+                    Text(
+                      isi,
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(height: 10.0,),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ListArticle()),
+                        );
+                      }, 
+                      child: Text("Done Reading"))
+                  ],
+                );
+              }else{
+                return SizedBox();
+              }
+            }
+          );
+        }
+      )
+    );
+  }
+}
+
+class ListArticle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Artikel'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('listArticle').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+          if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+            return Text("No data available");
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String judul = data['Judul'];
+              String ringkasan = data['Ringkasan'];
+              return Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(
+                        judul,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        ringkasan,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    ButtonBar(
+                      children: <Widget>[
+                        ElevatedButton(
+                          child: const Text('Read'),
+                          onPressed: () {
+                            judulArticle = judul;
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ViewArticle()),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TambahArticle()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
 }
 
 class TambahGroup extends StatelessWidget {
@@ -40,7 +241,7 @@ class TambahGroup extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text("Masukkan Nama Group : "),
+          Text("Masukkan Nama Group"),
           SizedBox(height: 5.0,),
           TextField(
             controller: nama,
@@ -48,7 +249,7 @@ class TambahGroup extends StatelessWidget {
               hintText: "Masukkan nama group disini.."),
           ),
           SizedBox(height: 15.0,),
-          Text("Masukkan Deskripsi Group : "),
+          Text("Masukkan Deskripsi Group"),
           SizedBox(height: 5.0,),
           TextField(
             controller: deskripsi,
@@ -399,9 +600,14 @@ class Forum extends StatelessWidget {
                 ),
                 child: Text('Forum'),
               ),
+              SizedBox(height: 20.0,),
               ElevatedButton(
                 onPressed: () {
-                  
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ListArticle()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(200, 60), 
