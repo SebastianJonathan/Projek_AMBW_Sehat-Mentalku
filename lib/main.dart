@@ -27,6 +27,60 @@ void main() async {
   );
 }
 
+class TambahGroup extends StatelessWidget {
+  const TambahGroup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final nama = TextEditingController();
+    final deskripsi = TextEditingController();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Group"),
+      ),
+      body: Column(
+        children: [
+          Text("Masukkan Nama Group : "),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: nama,
+            decoration: InputDecoration(
+              hintText: "Masukkan nama group disini.."),
+          ),
+          SizedBox(height: 15.0,),
+          Text("Masukkan Deskripsi Group : "),
+          SizedBox(height: 5.0,),
+          TextField(
+            controller: deskripsi,
+            decoration: InputDecoration(
+              hintText: "Masukkan deskripsi group disini.."),
+          ),
+          SizedBox(height: 15.0,),
+          ElevatedButton(
+            onPressed: (){
+              CollectionReference users = FirebaseFirestore.instance.collection('listGroupForum');
+              Map<String, dynamic> data = {
+                'Nama' : nama.text,
+                'Deskripsi' : deskripsi.text
+              };
+
+              users
+                .add(data)
+                .then((value) => print('Data inserted successfully.'))
+                .catchError((error) => print('Failed to insert data: $error'));
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ListGroupPage()),
+              );
+            },
+            child: Text("Add Group"))
+        ],
+      ),
+    );
+  }
+}
+
 class ChatGroupRoom extends StatelessWidget {
   const ChatGroupRoom({Key? key});
 
@@ -226,6 +280,17 @@ class ListGroupPage extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TambahGroup()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
@@ -545,7 +610,7 @@ class FormKonsultasi extends StatelessWidget {
           TextField(
             controller: jamMulai,
             decoration: InputDecoration(
-              hintText: "Masukkan Feedback Disini(Jika Ada)"),
+              hintText: "Masukkan jam mulai disini.."),
             onChanged: (value) {
               if(value.length == 5){
                 hitungJam(jamMulai.text, jamAkhir);
