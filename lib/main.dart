@@ -1605,102 +1605,187 @@ class MyApp extends StatelessWidget {
     final _usernameController = TextEditingController();
     final _passwordController = TextEditingController();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Sehat Mentalku"),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 80.0),
-          const Center(
-            child: Text(
-              'SEHAT MENTALKU',
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
+      // appBar: AppBar(
+      //   title: const Text("Sehat Mentalku"),
+      // ),
+
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image:  AssetImage("bg.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          // color: Colors.amber,
+          decoration: 
+            const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [Color.fromRGBO(144, 202, 249, 0.5), Color.fromRGBO(21, 101, 192, 0.6)],
+                // colors: [Color.fromRGBO(144, 176, 255, 0.494), Color.fromRGBO(0, 80, 146, 0.498)]
               ),
             ),
-          ),
-          const SizedBox(height: 120.0),
-          TextField(
-            controller: _usernameController,
-            decoration: const InputDecoration(
-              filled: true,
-              labelText: 'Username',
-            ),
-          ),
-          const SizedBox(height: 12.0),
-          TextField(
-            controller: _passwordController,
-            decoration: const InputDecoration(
-              filled: true,
-              labelText: 'Password',
-            ),
-            obscureText: true,
-          ),
-          OverflowBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                child: const Text('Register'),
-                onPressed: () {
-                  final newUser = user(
-                    username: _usernameController.text,
-                    password: _passwordController.text,
-                    status: "Active",
-                  );
-                  Database.addData(users: newUser);
-                  _usernameController.text = "";
-                  _passwordController.text = "";
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyApp()),
-                  );
-                },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 80.0),
+              Image.asset(
+                'assets/logo.png', 
+                height: 280,
+                width: 280,
               ),
-              ElevatedButton(
-                child: const Text('Login'),
-                onPressed: () async {
-                  final enteredUsername = _usernameController.text;
-                  final enteredPassword = _passwordController.text;
-
-                  final snapshot = await FirebaseFirestore.instance
-                      .collection('userTable')
-                      .get();
-
-                  bool foundUser = false;
-                  for (final doc in snapshot.docs) {
-                    final data = doc.data() as Map<String, dynamic>;
-                    final username = data['username'] as String;
-                    final password = data['password'] as String;
-                    final status = data['status'] as String;
-
-                    if (enteredUsername == username &&
-                        enteredPassword == password &&
-                        status == "Active") {
-                      foundUser = true;
-                      break;
-                    }
-                  }
-                  if (foundUser) {
-                    loggedIn = enteredUsername;
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  } else {
-                    print("Invalid username or password");
-                  }
-                },
+              // const Center(
+              //   child: Text(
+              //     'SEHAT MENTALKU',
+              //     style: TextStyle(
+              //       fontFamily: 'Roboto',
+              //       fontSize: 24.0,
+              //       fontWeight: FontWeight.bold,
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 30.0),
+              
+              FractionallySizedBox(
+                widthFactor: 0.75,
+                child: TextField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    filled: true,
+                    labelText: 'Username',
+                    fillColor: Colors.white,
+                    floatingLabelStyle: TextStyle(
+                      color: Colors.black45,
+                    ),
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none
+                    )
+                  ),
+                ),
               ),
+              
+              const SizedBox(height: 12.0),
+              
+              FractionallySizedBox(
+                widthFactor: 0.75,
+                child: TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    filled: true,
+                    labelText: 'Password',
+                    fillColor: Colors.white,
+                    floatingLabelStyle: TextStyle(
+                      color: Colors.black45,
+                    ),
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none
+                    )
+                  ),
+                  obscureText: true,
+                ),
+              ),
+              
+              const SizedBox(height: 15.0),
+              
+              OverflowBar(
+                alignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 90,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                        foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            // side: BorderSide(color: Colors.black)
+                          ),
+                        ),
+                      ),
+                      child: const Text('Register'),
+                      onPressed: () {
+                        final newUser = user(
+                          username: _usernameController.text,
+                          password: _passwordController.text,
+                          status: "Active",
+                        );
+                        Database.addData(users: newUser);
+                        _usernameController.text = "";
+                        _passwordController.text = "";
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MyApp()),
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(width: 20.0),
+
+                  SizedBox(
+                    width: 90,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                        foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            side: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      child: const Text('Login'),
+                      onPressed: () async {
+                        final enteredUsername = _usernameController.text;
+                        final enteredPassword = _passwordController.text;
+                                
+                        final snapshot = await FirebaseFirestore.instance
+                            .collection('userTable')
+                            .get();
+                                
+                        bool foundUser = false;
+                        for (final doc in snapshot.docs) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          final username = data['username'] as String;
+                          final password = data['password'] as String;
+                          final status = data['status'] as String;
+                                
+                          if (enteredUsername == username &&
+                              enteredPassword == password &&
+                              status == "Active") {
+                            foundUser = true;
+                            break;
+                          }
+                        }
+                        if (foundUser) {
+                          loggedIn = enteredUsername;
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                        } else {
+                          print("Invalid username or password");
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                  height: 8.0),
             ],
           ),
-          const SizedBox(
-              height: 8.0),
-        ],
+        ),
       ),
     );
   }
