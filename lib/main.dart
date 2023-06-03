@@ -1241,181 +1241,279 @@ class HomePage extends StatelessWidget {
         ),
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-        backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu,
-            semanticLabel: 'menu',
-          ),
-          onPressed: () {
-            final RenderBox overlay =
-                Overlay.of(context).context.findRenderObject() as RenderBox;
-            final Offset topLeft = Offset.zero;
-            showMenu(
-              context: context,
-              position: RelativeRect.fromLTRB(
-                topLeft.dx,
-                topLeft.dy,
-                overlay.size.width - topLeft.dx,
-                overlay.size.height - topLeft.dy,
-              ),
-              items: [
-                const PopupMenuItem(
-                  child: Text('Curhat Anonim'),
-                  value: 1,
-                ),
-                const PopupMenuItem(
-                  child: Text('Konsultasi Psikolog'),
-                  value: 2,
-                ),
-                const PopupMenuItem(
-                  child: Text('Forum'),
-                  value: 3,
-                ),
-                const PopupMenuItem(
-                  child: Text('Edit Profile'),
-                  value: 4,
-                ),
-              ],
-              elevation: 8.0,
-            ).then((value) {
-              if (value != null) {
-                if (value == 1) {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Curhat()),
-                  );
-                } else if (value == 2) {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ListPsikolog()),
-                  );
-                } else if(value == 3){
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Forum()),
-                  );
-                }
-              }
-            });
-          },
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image:  AssetImage("bg.png"),
+          fit: BoxFit.cover,
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            alignment: Alignment.topLeft,
-            child: Text(
-              'Logged In As : ' + loggedIn,
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
+      child: Container(
+        decoration: 
+          const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [Color.fromRGBO(227, 242, 253, 0.8), Color.fromRGBO(66, 165, 245, 0.8)],
             ),
           ),
-          const SizedBox(height: 20.0),
-          const Center(
-            child: Text(
-              'Appointment',
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            // title: const Text('Home Page'),
+            // backgroundColor: Colors.blue,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            // children
+            titleSpacing: 0,
+            leading: IconButton(
+              color: Colors.black,
+              padding: EdgeInsets.all(3),
+              icon: const Icon(
+                Icons.menu,
+                semanticLabel: 'menu',
+                
               ),
-            ),
-          ),
-          const SizedBox(height: 5.0),
-          Container(
-            height: 200,
-            alignment: Alignment.centerLeft,
-            child: StreamBuilder<List<Map<String, dynamic>>>(
-              stream: getDatas("listKonsultasi"),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                } else if (snapshot.hasData) {
-                  List<Map<String, dynamic>> dataList = snapshot.data!;
-                  List<Widget> appointmentWidgets = [];
-                  for (var data in dataList) {
-                    String namaPsikolog = data['Psikolog'];
-                    String jamMulai = data['JamMulai'];
-                    String jamAkhir = data['JamBerakhir'];
-                    String user = data['User'];
-                    if (user == loggedIn) {
-                      appointmentWidgets.add(
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(10),
-                              child: Text(
-                                "Psikolog: " + namaPsikolog,
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.all(10),
-                              child: Text(
-                                "Akan Mulai Pada " + jamMulai,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.all(10),
-                              child: Text(
-                                "Berakhir pada " + jamAkhir,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ],
-                        ),
+              onPressed: () {
+                final RenderBox overlay =
+                    Overlay.of(context).context.findRenderObject() as RenderBox;
+                final Offset topLeft = Offset.zero;
+                showMenu(
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                    topLeft.dx,
+                    topLeft.dy,
+                    overlay.size.width - topLeft.dx,
+                    overlay.size.height - topLeft.dy,
+                  ),
+                  items: [
+                    const PopupMenuItem(
+                      child: Text('Curhat Anonim'),
+                      value: 1,
+                    ),
+                    const PopupMenuItem(
+                      child: Text('Konsultasi Psikolog'),
+                      value: 2,
+                    ),
+                    const PopupMenuItem(
+                      child: Text('Forum'),
+                      value: 3,
+                    ),
+                    const PopupMenuItem(
+                      child: Text('Edit Profile'),
+                      value: 4,
+                    ),
+                  ],
+                  elevation: 8.0,
+                ).then((value) {
+                  if (value != null) {
+                    if (value == 1) {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Curhat()),
+                      );
+                    } else if (value == 2) {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ListPsikolog()),
+                      );
+                    } else if(value == 3){
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Forum()),
                       );
                     }
                   }
-                  return Container(
-                    height: 200,
-                    child: SingleChildScrollView(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: appointmentWidgets,
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  return Text("No data available");
-                }
+                });
               },
             ),
-          ),
-          const SizedBox(height: 20.0),
-          const Center(
-            child: Text(
-              'History',
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
+
+            title: IconButton(
+              color: Colors.black,
+              padding: EdgeInsets.all(3),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyApp()),
+                );
+              }, 
+              icon: const Icon(
+                Icons.logout_outlined,
+
               ),
             ),
           ),
-          const SizedBox(height: 5.0),
-          Container(
-            height: 200,
-            child: ListView(children: listWid),
+          body: Column(
+            children: [
+              Container(
+                alignment: Alignment.topRight,
+                padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                child: Text(
+                  'Hello,\n$loggedIn  ',
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const Divider(
+                thickness: 3.5,
+                color: Colors.black87,
+              ),
+              const SizedBox(height: 10.0),
+              const Center(
+                child: Text(
+                  'Appointment',
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5.0),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: Container(
+                  height: 200,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), //color of shadow
+                        spreadRadius: 3, //spread radius
+                        blurRadius: 7, // blur radius
+                        offset: const Offset(0, 1), // changes position of shadow
+                      )
+                    ],
+                    border: Border.all(
+                      color: Colors.black38,
+              
+                    )
+              
+                  ),
+                  alignment: Alignment.centerLeft,
+                  child: StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: getDatas("listKonsultasi"),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else if (snapshot.hasData) {
+                        List<Map<String, dynamic>> dataList = snapshot.data!;
+                        List<Widget> appointmentWidgets = [];
+                        for (var data in dataList) {
+                          String namaPsikolog = data['Psikolog'];
+                          String jamMulai = data['JamMulai'];
+                          String jamAkhir = data['JamBerakhir'];
+                          String user = data['User'];
+                          if (user == loggedIn) {
+                            appointmentWidgets.add(
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Text(
+                                      "Psikolog: " + namaPsikolog,
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Text(
+                                      "Akan Mulai Pada " + jamMulai,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Text(
+                                      "Berakhir pada " + jamAkhir,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        }
+                        return Container(
+                          height: 200,
+                          child: SingleChildScrollView(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: appointmentWidgets,
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Text("No data available");
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              const Center(
+                child: Text(
+                  'History',
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5.0),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: Container(
+                  height: 200,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), //color of shadow
+                        spreadRadius: 3, //spread radius
+                        blurRadius: 7, // blur radius
+                        offset: const Offset(0, 1), // changes position of shadow
+                      )
+                    ],
+                    border: Border.all(
+                      color: Colors.black38,
+              
+                    )
+              
+                  ),
+                  child: ListView(children: listWid),
+                ),
+              ),
+            ],
           ),
-        ],
+          resizeToAvoidBottomInset: false,
+        
+        bottomSheet: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: 50,
+          child: Text("IKLAN"),
+        ),
+        
+        
+        ),
       ),
-      resizeToAvoidBottomInset: false,
     );
   }
 }
