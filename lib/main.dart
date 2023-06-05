@@ -300,44 +300,116 @@ class TambahGroup extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text("Add Group"),
-        ),
-        body: Column(
-          children: [
-            Text("Masukkan Nama Group"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: nama,
-              decoration: InputDecoration(
-                hintText: "Masukkan nama group disini.."),
-            ),
-            SizedBox(height: 15.0,),
-            Text("Masukkan Deskripsi Group"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: deskripsi,
-              decoration: InputDecoration(
-                hintText: "Masukkan deskripsi group disini.."),
-            ),
-            SizedBox(height: 15.0,),
-            ElevatedButton(
-              onPressed: (){
-                CollectionReference users = FirebaseFirestore.instance.collection('listGroupForum');
-                Map<String, dynamic> data = {
-                  'Nama' : nama.text,
-                  'Deskripsi' : deskripsi.text
-                };
-    
-                users
-                  .add(data)
-                  .then((value) => print('Data inserted successfully.'))
-                  .catchError((error) => print('Failed to insert data: $error'));
+          leading: IconButton(
+              onPressed: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ListGroupPage()),
                 );
-              },
-              child: Text("Add Group"))
+              }, 
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                  
+              ),
+            ),
+        ),
+        body: Column(
+          children: [
+            Text("Masukkan Nama Group"),
+            SizedBox(height: 5.0,),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5), //color of shadow
+                      spreadRadius: 3, //spread radius
+                      blurRadius: 7, // blur radius
+                      offset: const Offset(0, 1), // changes position of shadow
+                    )
+                  ],
+                  border: Border.all(
+                    color: Colors.black38,
+                  )
+                ),
+                child: TextField(
+                  controller: nama,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan nama group disini.."
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0,),
+            Text("Masukkan Deskripsi Group"),
+            SizedBox(height: 5.0,),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5), //color of shadow
+                      spreadRadius: 3, //spread radius
+                      blurRadius: 7, // blur radius
+                      offset: const Offset(0, 1), // changes position of shadow
+                    )
+                  ],
+                  border: Border.all(
+                    color: Colors.black38,
+            
+                  )
+            
+                ),
+                child: TextField(
+                  controller: deskripsi,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan deskripsi group disini.."),
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0,),
+            SizedBox(
+              width: 100,
+              height: 35,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                  foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      side: BorderSide.none,
+                    ),
+                  ),
+                ),
+                onPressed: (){
+                  CollectionReference users = FirebaseFirestore.instance.collection('listGroupForum');
+                  Map<String, dynamic> data = {
+                    'Nama' : nama.text,
+                    'Deskripsi' : deskripsi.text
+                  };
+                
+                  users
+                    .add(data)
+                    .then((value) => print('Data inserted successfully.'))
+                    .catchError((error) => print('Failed to insert data: $error'));
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ListGroupPage()),
+                  );
+                },
+                child: Text("Add Group")),
+            )
           ],
         ),
 
@@ -804,6 +876,19 @@ class PaymentPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text('Pembayaran'),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FormKonsultasi()),
+                );
+              }, 
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                  
+              ),
+            ),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -939,54 +1024,118 @@ class FormKonsultasi extends StatelessWidget {
         ),
         body: Column(
           children: [
+            SizedBox(height: 10.0),
             Text("Masukkan Jam Mulai(Format 24 Jam berakhiran .00)"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: jamMulai,
-              decoration: InputDecoration(
-                hintText: "Masukkan jam mulai disini.."),
-              onChanged: (value) {
-                if(value.length == 5){
-                  hitungJam(jamMulai.text, jamAkhir);
-                }else{
-                  jamAkhir.text = "";
-                }
-              },
+            const SizedBox(height: 5.0,),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: Container(
+                color: Colors.white,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Colors.black87,
+                  )
+                ),
+                child: TextField(
+                  controller: jamMulai,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan jam mulai disini.."),
+                  onChanged: (value) {
+                    if(value.length == 5){
+                      hitungJam(jamMulai.text, jamAkhir);
+                    }else{
+                      jamAkhir.text = "";
+                    }
+                  },
+                ),
+              ),
             ),
-            SizedBox(height: 20.0,),
+            const SizedBox(height: 20.0,),
             Text("Jam Berakhir"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: jamAkhir,
+            const SizedBox(height: 5.0,),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: Container(
+                color: Colors.white,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Colors.black87,
+                  )
+                ),
+                child: TextField(
+                  controller: jamAkhir,
+                ),
+              ),
             ),
-            SizedBox(height: 20.0,),
+            const SizedBox(height: 20.0,),
             Text("Masukkan Masalah Anda"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: masalah,
-              decoration: InputDecoration(
-                hintText: "Masukkan Masalah Anda Disini.."),
+            const SizedBox(height: 5.0,),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: Container(
+                color: Colors.white,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Colors.black87,
+                  )
+                ),
+                child: TextField(
+                  controller: masalah,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan Masalah Anda Disini.."),
+                ),
+              ),
             ),
-            SizedBox(height: 20.0,),
+            const SizedBox(height: 20.0,),
             Text("Masukkan Pesan Tambahan Anda"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: pesanTambahan,
-              decoration: InputDecoration(
-                hintText: "Masukkan Pesan Anda Disini.."),
+            const SizedBox(height: 5.0,),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: Container(
+                color: Colors.white,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Colors.black87,
+                  )
+                ),
+                child: TextField(
+                  controller: pesanTambahan,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan Pesan Anda Disini.."),
+                ),
+              ),
             ),
-            ElevatedButton(
-              onPressed: () async{
-                harga = (int.parse(jamAkhir.text.substring(0,2)) - int.parse(jamMulai.text.substring(0,2))) * 100000;
-                jamMulaii = jamMulai.text;
-                jamAkhirr = jamAkhir.text;
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PaymentPage()),
-                );
-              }, 
-              child: Text("Submit"))
+            const SizedBox(height: 10.0,),
+            SizedBox(
+              width: 90,
+              height: 35,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                  foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      side: BorderSide.none,
+                    ),
+                  ),
+                ),
+                onPressed: () async{
+                  harga = (int.parse(jamAkhir.text.substring(0,2)) - int.parse(jamMulai.text.substring(0,2))) * 100000;
+                  jamMulaii = jamMulai.text;
+                  jamAkhirr = jamAkhir.text;
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentPage()),
+                  );
+                }, 
+                child: Text("Submit")),
+            )
           ]),
       
       bottomSheet: const Iklan()
@@ -1083,49 +1232,57 @@ class ListPsikolog extends StatelessWidget {
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
               return Text("No data available");
             }
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot document = snapshot.data!.docs[index];
-                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                String namaPsikolog = data['Nama'];
-                String deskripsi = data['Deskripsi'];
+            return Column(
+              children: [
+                ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot document = snapshot.data!.docs[index];
+                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                    String namaPsikolog = data['Nama'];
+                    String deskripsi = data['Deskripsi'];
     
-                return Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.person,
-                        size: 100,
+                    return Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.person,
+                            size: 100,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            namaPsikolog,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(deskripsi),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: (){
+                              psikologPilihan = namaPsikolog;
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const FormKonsultasi()),
+                              );
+                                      }, 
+                            child: Text("Pesan")),
+                        ],
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        namaPsikolog,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(deskripsi),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: (){
-                          psikologPilihan = namaPsikolog;
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const FormKonsultasi()),
-                          );
-                                  }, 
-                        child: Text("Pesan")),
-                    ],
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+                const SizedBox(height: 55),
+              ],
             );
           },
+          
+        
+
         ),
     
       bottomSheet: const Iklan()
@@ -1166,79 +1323,84 @@ class FeedbackPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Feedback"),
         ),
-        body: Column(
-          children: [
-            SizedBox(height: 20.0,),
-            Text(
-              "Feedback :"
-            ),
-            SizedBox(height: 10.0,),
-            FractionallySizedBox(
-              widthFactor: 0.85,
-              child: TextField(
-                controller: feedback,
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.black87),
-                  ),
-                  hintText: "Masukkan Feedback Disini(Jika Ada)"),
+        body: Align(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
+              SizedBox(height: 20.0,),
+              Text(
+                "Feedback :"
               ),
-            ),
-            SizedBox(height: 20.0,),
-            Text(
-              "Report :"
-            ),
-            SizedBox(height: 10.0,),
-            FractionallySizedBox(
-              widthFactor: 0.85,
-              child: TextField(
-                controller: report,
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.black87),
-                  ),
-                  hintText: "Masukkan Report Disini(Jika Ada)"),
-              ),
-            ),
-            SizedBox(height: 10.0,),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: const MaterialStatePropertyAll(Colors.amber),
-                foregroundColor: const MaterialStatePropertyAll(Colors.black),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                    side: BorderSide.none,
-                  ),
+              SizedBox(height: 10.0,),
+              FractionallySizedBox(
+                widthFactor: 0.85,
+                child: TextField(
+                  controller: feedback,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.black87),
+                    ),
+                    hintText: "Masukkan Feedback Disini(Jika Ada)"),
                 ),
               ),
-              onPressed: (){
-                CollectionReference users = FirebaseFirestore.instance.collection('tableFeedback');
-                Map<String, dynamic> data = {
-                  'User' : loggedIn,
-                  'Feedback' : feedback.text
-                };
-                users.add(data);
-                CollectionReference users2 = FirebaseFirestore.instance.collection('tableReport');
-                Map<String, dynamic> data2 = {
-                  'User' : loggedIn,
-                  'Report' : report.text
-                };
-                users2.add(data2);
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: Text(
-                "Submit"
-              )),
-          ],
+              SizedBox(height: 20.0,),
+              Text(
+                "Report :"
+              ),
+              SizedBox(height: 10.0,),
+              FractionallySizedBox(
+                widthFactor: 0.85,
+                child: TextField(
+                  controller: report,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.black87),
+                    ),
+                    hintText: "Masukkan Report Disini(Jika Ada)"),
+                ),
+              ),
+              SizedBox(height: 10.0,),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                  foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      side: BorderSide.none,
+                    ),
+                  ),
+                ),
+                onPressed: (){
+                  CollectionReference users = FirebaseFirestore.instance.collection('tableFeedback');
+                  Map<String, dynamic> data = {
+                    'User' : loggedIn,
+                    'Feedback' : feedback.text
+                  };
+                  users.add(data);
+                  CollectionReference users2 = FirebaseFirestore.instance.collection('tableReport');
+                  Map<String, dynamic> data2 = {
+                    'User' : loggedIn,
+                    'Report' : report.text
+                  };
+                  users2.add(data2);
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                },
+                child: Text(
+                  "Submit"
+                )),
+            ],
+          ),
         ),
 
       bottomSheet: const Iklan(),
@@ -1295,7 +1457,7 @@ class ChatRoom extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: 400,
+                              maxWidth: 370,
                             ),
                             margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                             padding: EdgeInsets.all(8.0),
@@ -1324,7 +1486,7 @@ class ChatRoom extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: 400,
+                              maxWidth: 370,
                             ),
                             margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                             padding: EdgeInsets.all(8.0),
@@ -1472,29 +1634,38 @@ class WaitingRoom extends StatelessWidget {
                     firstTime = false;
                     return Column(
                       children: [
-                        const SizedBox(height: 35.0),
+                        const SizedBox(height: 30.0),
                         const Text(
                           'Please Wait.....', 
                           style: TextStyle(
                             fontSize: 20,
                           ),
                         ),
-                        const SizedBox(height: 7.0),
-                        Container(
-                          alignment: Alignment.center,
-                          width: 400,
-                          height: 600,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black87,
+                        const SizedBox(height: 10.0),
+                        FractionallySizedBox(
+                          widthFactor: 0.8,
+                          heightFactor: 0.5,
+                          child: Container(
+                            color: Colors.white,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black87,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
                             ),
-                            borderRadius: BorderRadius.circular(30),
+                            child: const Text(
+                              "IKLAN",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            )
                           ),
                         ),
-                        const SizedBox(height: 7.0),
+                        const SizedBox(height: 10.0),
                         LoadingAnimationWidget.staggeredDotsWave(
                           color: Colors.white,
-                          size: 200,
+                          size: 50,
                         ),
                       ],
 
@@ -1859,9 +2030,10 @@ class listPendengar extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                     child: Container(
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: Colors.black87,
                         )
@@ -1869,7 +2041,7 @@ class listPendengar extends StatelessWidget {
                       child: Text(
                         namaPendengar,
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.left,

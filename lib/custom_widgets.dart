@@ -98,8 +98,8 @@ class CustomFABLoc extends FloatingActionButtonLocation {
   @override
   Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
     return Offset(
-      scaffoldGeometry.scaffoldSize.width * 0.5, ///customize here
-      scaffoldGeometry.scaffoldSize.height - 55
+      scaffoldGeometry.scaffoldSize.width * 0.445, ///customize here
+      scaffoldGeometry.scaffoldSize.height * 0.81
     );
   }
 }
