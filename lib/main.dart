@@ -17,6 +17,8 @@ String jamAkhirr = "";
 String masalahKu = "";
 String pesanKu = "";
 String judulArticle = "";
+String userComment = "";
+String isi = "";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +32,296 @@ void main() async {
       home: MyApp(),
     ),
   );
+}
+
+class AddComment extends StatelessWidget {
+  const AddComment({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final comment = TextEditingController();
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text("Add Article"),
+        ),
+        body: Column(
+          children: [
+            Text("Masukkan Komentar Anda"),
+            SizedBox(height: 5.0,),
+            TextField(
+              controller: comment,
+              decoration: InputDecoration(
+                hintText: "Masukkan comment disini.."),
+            ),
+            SizedBox(height: 15.0,),
+            ElevatedButton(
+              onPressed: (){
+                CollectionReference users = FirebaseFirestore.instance.collection('commentForum');
+                Map<String, dynamic> data = {
+                  'Username' : userComment,
+                  'Isi' : isi,
+                  'UserComment' : loggedIn,
+                  'Comment' : comment.text
+                };
+    
+                users
+                  .add(data)
+                  .then((value) => print('Data inserted successfully.'))
+                  .catchError((error) => print('Failed to insert data: $error'));
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ViewComment()),
+                );
+              },
+              child: Text("Add Comment"))
+          ],
+        ),
+
+      bottomSheet: const Iklan(),
+
+      ),
+    );
+  }
+}
+
+class AddForum extends StatelessWidget {
+  const AddForum({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final curahan = TextEditingController();
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text("Add Article"),
+        ),
+        body: Column(
+          children: [
+            Text("Masukkan Curahan Hati Anda"),
+            SizedBox(height: 5.0,),
+            TextField(
+              controller: curahan,
+              decoration: InputDecoration(
+                hintText: "Masukkan disini.."),
+            ),
+            SizedBox(height: 15.0,),
+            ElevatedButton(
+              onPressed: (){
+                CollectionReference users = FirebaseFirestore.instance.collection('listPostForum');
+                Map<String, dynamic> data = {
+                  'Username' : loggedIn,
+                  'Isi' : curahan.text,
+                };
+    
+                users
+                  .add(data)
+                  .then((value) => print('Data inserted successfully.'))
+                  .catchError((error) => print('Failed to insert data: $error'));
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HalamanForum()),
+                );
+              },
+              child: Text("Add Post"))
+          ],
+        ),
+
+      bottomSheet: const Iklan(),
+
+      ),
+    );
+  }
+}
+
+class ViewComment extends StatelessWidget {
+  const ViewComment({Key? key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Forum"),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HalamanForum()),
+            );
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+          ),
+        ),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('commentForum').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+          if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+            return Text("No data available");
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String users = data['Username'];
+              String isi = data['Isi'];
+              String userNow = data['UserComment'];
+              String comment = data['Comment'];
+              if (users == userComment && isi == isi) {
+                return Card(
+                  elevation: 2.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: Colors.grey, width: 0.5),
+                  ),
+                  margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          userNow,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          comment,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return SizedBox();
+              }
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddComment()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: CustomFABLoc(),
+
+      bottomSheet: const Iklan(),
+    );
+  }
+}
+
+class HalamanForum extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Forum'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('listPostForum').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String username = data['Username'];
+              String isi = data['Isi'];
+
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        username,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        isi,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 16),
+                      GestureDetector(
+                        onTap: () {
+                          userComment = username;
+                          isi = isi;
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ViewComment()),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.comment),
+                            SizedBox(width: 8),
+                            Text('comment'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddForum()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: CustomFABLoc(),
+
+      bottomSheet: const Iklan(),
+    );
+  }
 }
 
 class TambahArticle extends StatelessWidget {
@@ -764,7 +1056,11 @@ class Forum extends StatelessWidget {
                   SizedBox(height: 20.0,),
                   ElevatedButton(
                     onPressed: () {
-                      
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HalamanForum()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(200, 60), 
@@ -1232,8 +1528,7 @@ class ListPsikolog extends StatelessWidget {
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
               return Text("No data available");
             }
-            return Column(
-              children: [
+            return 
                 ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
@@ -1275,9 +1570,9 @@ class ListPsikolog extends StatelessWidget {
                       ),
                     );
                   },
-                ),
-                const SizedBox(height: 55),
-              ],
+                // ),
+              //   const SizedBox(height: 55),
+              // ],
             );
           },
           
@@ -1642,26 +1937,27 @@ class WaitingRoom extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10.0),
-                        FractionallySizedBox(
-                          widthFactor: 0.8,
-                          heightFactor: 0.5,
-                          child: Container(
-                            color: Colors.white,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black87,
-                              ),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: const Text(
-                              "IKLAN",
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            )
-                          ),
-                        ),
+                        // FractionallySizedBox(
+                        //   widthFactor: 0.8,
+                        //   heightFactor: 0.5,
+                        //   child: Container(
+                            
+                        //     alignment: Alignment.center,
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.white,
+                        //       border: Border.all(
+                        //         color: Colors.black87,
+                        //       ),
+                        //       borderRadius: BorderRadius.circular(30),
+                        //     ),
+                        //     child: const Text(
+                        //       "IKLAN",
+                        //       style: TextStyle(
+                        //         fontSize: 20,
+                        //       ),
+                        //     )
+                        //   ),
+                        // ),
                         const SizedBox(height: 10.0),
                         LoadingAnimationWidget.staggeredDotsWave(
                           color: Colors.white,
