@@ -44,40 +44,88 @@ class AddComment extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: Text("Add Article"),
-        ),
-        body: Column(
-          children: [
-            Text("Masukkan Komentar Anda"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: comment,
-              decoration: InputDecoration(
-                hintText: "Masukkan comment disini.."),
+          title: Text("Tambah Komentar"),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ViewComment()),
+              );
+            }, 
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
             ),
-            SizedBox(height: 15.0,),
-            ElevatedButton(
-              onPressed: (){
-                CollectionReference users = FirebaseFirestore.instance.collection('commentForum');
-                Map<String, dynamic> data = {
-                  'Username' : userComment,
-                  'Isi' : isi,
-                  'UserComment' : loggedIn,
-                  'Comment' : comment.text
-                };
-    
-                users
-                  .add(data)
-                  .then((value) => print('Data inserted successfully.'))
-                  .catchError((error) => print('Failed to insert data: $error'));
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ViewComment()),
-                );
-              },
-              child: Text("Add Comment"))
-          ],
+          ),
+        ),
+        body: Container(
+          alignment: Alignment.topCenter,
+          child: FractionallySizedBox(
+            widthFactor:0.8,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Text("Masukkan Komentar Anda"),
+                SizedBox(height: 5.0,),
+                Container(
+                  alignment: Alignment.topCenter,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.black87,
+                    )
+                  ),
+                  child: TextField(
+                    controller: comment,
+                    decoration: InputDecoration(
+                      hintText: "Masukkan comment disini..",
+                      contentPadding: EdgeInsets.all(5),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide.none
+                      )
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15.0,),
+                SizedBox(
+                  width: 130,
+                  height: 35,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                      foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          side: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    onPressed: (){
+                      CollectionReference users = FirebaseFirestore.instance.collection('commentForum');
+                      Map<String, dynamic> data = {
+                        'Username' : userComment,
+                        'Isi' : isi,
+                        'UserComment' : loggedIn,
+                        'Comment' : comment.text
+                      };
+                    
+                      users
+                        .add(data)
+                        .then((value) => print('Data inserted successfully.'))
+                        .catchError((error) => print('Failed to insert data: $error'));
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ViewComment()),
+                      );
+                    },
+                    child: Text("Add Comment")),
+                )
+              ],
+            ),
+          ),
         ),
 
       bottomSheet: const Iklan(),
@@ -98,37 +146,77 @@ class AddForum extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text("Add Article"),
-        ),
-        body: Column(
-          children: [
-            Text("Masukkan Curahan Hati Anda"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: curahan,
-              decoration: InputDecoration(
-                hintText: "Masukkan disini.."),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HalamanForum()),
+              );
+            }, 
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
             ),
-            SizedBox(height: 15.0,),
-            ElevatedButton(
-              onPressed: (){
-                CollectionReference users = FirebaseFirestore.instance.collection('listPostForum');
-                Map<String, dynamic> data = {
-                  'Username' : loggedIn,
-                  'Isi' : curahan.text,
-                };
-    
-                users
-                  .add(data)
-                  .then((value) => print('Data inserted successfully.'))
-                  .catchError((error) => print('Failed to insert data: $error'));
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HalamanForum()),
-                );
-              },
-              child: Text("Add Post"))
-          ],
+          ),
+        ),
+        body: Container(
+          alignment: Alignment.topCenter,
+          child: FractionallySizedBox(
+            widthFactor:0.8,
+            child: Column(
+              children: [
+                SizedBox(height: 15.0,),
+                Text("Masukkan Curahan Hati Anda"),
+                SizedBox(height: 5.0,),
+                TextField(
+                  controller: curahan,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan disini..",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none
+                    )
+                  ),
+                ),
+                SizedBox(height: 15.0,),
+                SizedBox(
+                  width: 100,
+                  height: 35,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                      foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          // side: BorderSide(color: Colors.black)
+                        ),
+                      ),
+                    ),
+                    onPressed: (){
+                      CollectionReference users = FirebaseFirestore.instance.collection('listPostForum');
+                      Map<String, dynamic> data = {
+                        'Username' : loggedIn,
+                        'Isi' : curahan.text,
+                      };
+                              
+                      users
+                        .add(data)
+                        .then((value) => print('Data inserted successfully.'))
+                        .catchError((error) => print('Failed to insert data: $error'));
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HalamanForum()),
+                      );
+                    },
+                    child: Text("Add Post")),
+                )
+              ],
+            ),
+          ),
         ),
 
       bottomSheet: const Iklan(),
@@ -143,95 +231,97 @@ class ViewComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text("Forum"),
-        leading: IconButton(
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text("Forum"),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HalamanForum()),
+              );
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            ),
+          ),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('commentForum').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text("Error: ${snapshot.error}");
+            }
+            if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
+              return Text("No data available");
+            }
+    
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot document = snapshot.data!.docs[index];
+                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                String users = data['Username'];
+                String isi = data['Isi'];
+                String userNow = data['UserComment'];
+                String comment = data['Comment'];
+                if (users == userComment && isi == isi) {
+                  return Card(
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.grey, width: 0.5),
+                    ),
+                    margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userNow,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            comment,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return SizedBox();
+                }
+              },
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pop(context);
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HalamanForum()),
+              MaterialPageRoute(builder: (context) => AddComment()),
             );
           },
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-          ),
+          child: Icon(Icons.add),
         ),
+        floatingActionButtonLocation: CustomFABLoc(),
+    
+        bottomSheet: const Iklan(),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('commentForum').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          }
-          if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-            return Text("No data available");
-          }
-
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot document = snapshot.data!.docs[index];
-              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-              String users = data['Username'];
-              String isi = data['Isi'];
-              String userNow = data['UserComment'];
-              String comment = data['Comment'];
-              if (users == userComment && isi == isi) {
-                return Card(
-                  elevation: 2.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(color: Colors.grey, width: 0.5),
-                  ),
-                  margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userNow,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Text(
-                          comment,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              } else {
-                return SizedBox();
-              }
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddComment()),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: CustomFABLoc(),
-
-      bottomSheet: const Iklan(),
     );
   }
 }
@@ -239,87 +329,102 @@ class ViewComment extends StatelessWidget {
 class HalamanForum extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Forum'),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('listPostForum').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator();
-          }
-
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot document = snapshot.data!.docs[index];
-              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-              String username = data['Username'];
-              String isi = data['Isi'];
-
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        username,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        isi,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SizedBox(height: 16),
-                      GestureDetector(
-                        onTap: () {
-                          userComment = username;
-                          isi = isi;
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ViewComment()),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.comment),
-                            SizedBox(width: 8),
-                            Text('comment'),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text('Forum'),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Forum()),
               );
-            },
-          );
-        },
+            }, 
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            ),
+          ),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('listPostForum').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+    
+            if (!snapshot.hasData) {
+              return CircularProgressIndicator();
+            }
+    
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot document = snapshot.data!.docs[index];
+                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                String username = data['Username'];
+                String isi = data['Isi'];
+    
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          username,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          isi,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(height: 16),
+                        GestureDetector(
+                          onTap: () {
+                            userComment = username;
+                            isi = isi;
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ViewComment()),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.comment),
+                              SizedBox(width: 8),
+                              Text('comment'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddForum()),
+            );
+          },
+          child: Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: CustomFABLoc(),
+    
+        bottomSheet: const Iklan(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddForum()),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: CustomFABLoc(),
-
-      bottomSheet: const Iklan(),
     );
   }
 }
@@ -337,54 +442,114 @@ class TambahArticle extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text("Add Article"),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ListArticle()),
+              );
+            }, 
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            ),
+          ),
         ),
-        body: Column(
-          children: [
-            Text("Masukkan Judul Artikel"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: judul,
-              decoration: InputDecoration(
-                hintText: "Masukkan judul artikel disini.."),
-            ),
-            SizedBox(height: 15.0,),
-            Text("Masukkan Ringkasan Artikel"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: ringkasan,
-              decoration: InputDecoration(
-                hintText: "Masukkan ringkasan artikel disini.."),
-            ),
-            SizedBox(height: 15.0,),
-            Text("Masukkan Isi Artikel"),
-            SizedBox(height: 5.0,),
-            TextField(
-              controller: isi,
-              decoration: InputDecoration(
-                hintText: "Masukkan isi artikel disini.."),
-            ),
-            SizedBox(height: 15.0,),
-            ElevatedButton(
-              onPressed: (){
-                CollectionReference users = FirebaseFirestore.instance.collection('listArticle');
-                Map<String, dynamic> data = {
-                  'Judul' : judul.text,
-                  'Ringkasan' : ringkasan.text,
-                  'Isi' : isi.text
-                };
-    
-                users
-                  .add(data)
-                  .then((value) => print('Data inserted successfully.'))
-                  .catchError((error) => print('Failed to insert data: $error'));
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ListArticle()),
-                );
-              },
-              child: Text("Add Article"))
-          ],
+        body: Container(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
+              SizedBox(height: 10.0,),
+              Text("Masukkan Judul Artikel"),
+              SizedBox(height: 5.0,),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: TextField(
+                  controller: judul,
+                  decoration: const InputDecoration(
+                    hintText: "Masukkan judul artikel disini..",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none
+                    )
+                  ),
+                ),
+              ),
+              SizedBox(height: 15.0,),
+              Text("Masukkan Ringkasan Artikel"),
+              SizedBox(height: 5.0,),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: TextField(
+                  controller: ringkasan,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan ringkasan artikel disini..",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none
+                    )
+                  ),
+                ),
+              ),
+              SizedBox(height: 15.0,),
+              Text("Masukkan Isi Artikel"),
+              SizedBox(height: 5.0,),
+              FractionallySizedBox(
+                widthFactor:0.8,
+                child: TextField(
+                  controller: isi,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan isi artikel disini..",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none
+                    )
+                  ),
+                ),
+              ),
+              SizedBox(height: 15.0,),
+              SizedBox(
+                width: 120,
+                height: 35,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                    foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        // side: BorderSide(color: Colors.black)
+                      ),
+                    ),
+                  ),
+                  onPressed: (){
+                    CollectionReference users = FirebaseFirestore.instance.collection('listArticle');
+                    Map<String, dynamic> data = {
+                      'Judul' : judul.text,
+                      'Ringkasan' : ringkasan.text,
+                      'Isi' : isi.text
+                    };
+                          
+                    users
+                      .add(data)
+                      .then((value) => print('Data inserted successfully.'))
+                      .catchError((error) => print('Failed to insert data: $error'));
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ListArticle()),
+                    );
+                  },
+                  child: Text("Add Article")),
+              )
+            ],
+          ),
         ),
 
       bottomSheet: const Iklan(),
@@ -436,10 +601,10 @@ class ViewArticle extends StatelessWidget {
                 if(judul == judulArticle){
                   return Column(
                     children: [
-                      Text(
-                        judul,
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
+                      // Text(
+                      //   judul,
+                      //   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      // ),
                       SizedBox(height: 15.0,),
                       FractionallySizedBox(
                         widthFactor: 0.9,
@@ -449,26 +614,26 @@ class ViewArticle extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 10.0,),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: const MaterialStatePropertyAll(Colors.amber),
-                          foregroundColor: const MaterialStatePropertyAll(Colors.black),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
-                              side: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                        onPressed: (){
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ListArticle()),
-                          );
-                        }, 
-                        child: Text("Done Reading")
-                      ),
+                      // ElevatedButton(
+                      //   style: ButtonStyle(
+                      //     backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                      //     foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                      //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      //       const RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.all(Radius.circular(30)),
+                      //         side: BorderSide.none,
+                      //       ),
+                      //     ),
+                      //   ),
+                      //   onPressed: (){
+                      //     Navigator.pop(context);
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(builder: (context) => ListArticle()),
+                      //     );
+                      //   }, 
+                      //   child: Text("Done Reading")
+                      // ),
                       const SizedBox(height: 55.0),
                     ],
                   );
@@ -606,103 +771,107 @@ class TambahGroup extends StatelessWidget {
               ),
             ),
         ),
-        body: Column(
-          children: [
-            Text("Masukkan Nama Group"),
-            SizedBox(height: 5.0,),
-            FractionallySizedBox(
-              widthFactor: 0.8,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5), //color of shadow
-                      spreadRadius: 3, //spread radius
-                      blurRadius: 7, // blur radius
-                      offset: const Offset(0, 1), // changes position of shadow
+        body: Container(
+          alignment: Alignment.topCenter,
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: Column(
+            children: [
+              Text("Masukkan Nama Group"),
+              SizedBox(height: 5.0,),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: Container(
+                  padding: const EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), //color of shadow
+                        spreadRadius: 3, //spread radius
+                        blurRadius: 7, // blur radius
+                        offset: const Offset(0, 1), // changes position of shadow
+                      )
+                    ],
+                    border: Border.all(
+                      color: Colors.black38,
                     )
-                  ],
-                  border: Border.all(
-                    color: Colors.black38,
-                  )
-                ),
-                child: TextField(
-                  controller: nama,
-                  decoration: InputDecoration(
-                    hintText: "Masukkan nama group disini.."
                   ),
-                ),
-              ),
-            ),
-            SizedBox(height: 15.0,),
-            Text("Masukkan Deskripsi Group"),
-            SizedBox(height: 5.0,),
-            FractionallySizedBox(
-              widthFactor: 0.8,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5), //color of shadow
-                      spreadRadius: 3, //spread radius
-                      blurRadius: 7, // blur radius
-                      offset: const Offset(0, 1), // changes position of shadow
-                    )
-                  ],
-                  border: Border.all(
-                    color: Colors.black38,
-            
-                  )
-            
-                ),
-                child: TextField(
-                  controller: deskripsi,
-                  decoration: InputDecoration(
-                    hintText: "Masukkan deskripsi group disini.."),
-                ),
-              ),
-            ),
-            SizedBox(height: 15.0,),
-            SizedBox(
-              width: 100,
-              height: 35,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: const MaterialStatePropertyAll(Colors.amber),
-                  foregroundColor: const MaterialStatePropertyAll(Colors.black),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                      side: BorderSide.none,
+                  child: TextField(
+                    controller: nama,
+                    decoration: InputDecoration(
+                      hintText: "Masukkan nama group disini.."
                     ),
                   ),
                 ),
-                onPressed: (){
-                  CollectionReference users = FirebaseFirestore.instance.collection('listGroupForum');
-                  Map<String, dynamic> data = {
-                    'Nama' : nama.text,
-                    'Deskripsi' : deskripsi.text
-                  };
-                
-                  users
-                    .add(data)
-                    .then((value) => print('Data inserted successfully.'))
-                    .catchError((error) => print('Failed to insert data: $error'));
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ListGroupPage()),
-                  );
-                },
-                child: Text("Add Group")),
-            )
-          ],
+              ),
+              SizedBox(height: 15.0,),
+              Text("Masukkan Deskripsi Group"),
+              SizedBox(height: 5.0,),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: Container(
+                  padding: const EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), //color of shadow
+                        spreadRadius: 3, //spread radius
+                        blurRadius: 7, // blur radius
+                        offset: const Offset(0, 1), // changes position of shadow
+                      )
+                    ],
+                    border: Border.all(
+                      color: Colors.black38,
+              
+                    )
+              
+                  ),
+                  child: TextField(
+                    controller: deskripsi,
+                    decoration: InputDecoration(
+                      hintText: "Masukkan deskripsi group disini.."),
+                  ),
+                ),
+              ),
+              SizedBox(height: 15.0,),
+              SizedBox(
+                width: 100,
+                height: 35,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: const MaterialStatePropertyAll(Colors.amber),
+                    foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        side: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  onPressed: (){
+                    CollectionReference users = FirebaseFirestore.instance.collection('listGroupForum');
+                    Map<String, dynamic> data = {
+                      'Nama' : nama.text,
+                      'Deskripsi' : deskripsi.text
+                    };
+                  
+                    users
+                      .add(data)
+                      .then((value) => print('Data inserted successfully.'))
+                      .catchError((error) => print('Failed to insert data: $error'));
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ListGroupPage()),
+                    );
+                  },
+                  child: Text("Add Group")),
+              )
+            ],
+          ),
         ),
 
       bottomSheet: const Iklan(),
@@ -748,52 +917,58 @@ class ChatGroupRoom extends StatelessWidget {
                       if (namaGroup == namaGrup && namaPengirim == loggedIn) {
                         return Align(
                           alignment: Alignment.centerLeft,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  loggedIn,
-                                  style: TextStyle(fontSize: 12.0, color: Colors.white),
-                                ),
-                                SizedBox(height: 4.0),
-                                Text(
-                                  chat,
-                                  style: TextStyle(fontSize: 24.0, color: Colors.white),
-                                ),
-                              ],
+                          child: FractionallySizedBox(
+                            widthFactor: 0.8,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    loggedIn,
+                                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                                  ),
+                                  SizedBox(height: 4.0),
+                                  Text(
+                                    chat,
+                                    style: TextStyle(fontSize: 16.0, color: Colors.white),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
                       } else if (namaGroup == namaGrup && namaPengirim != loggedIn) {
                         return Align(
                           alignment: Alignment.centerRight,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  namaPengirim,
-                                  style: TextStyle(fontSize: 12.0, color: Colors.white),
-                                ),
-                                SizedBox(height: 4.0),
-                                Text(
-                                  chat,
-                                  style: TextStyle(fontSize: 24.0, color: Colors.white),
-                                ),
-                              ],
+                          child: FractionallySizedBox(
+                            widthFactor: 0.8,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    namaPengirim,
+                                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                                  ),
+                                  SizedBox(height: 4.0),
+                                  Text(
+                                    chat,
+                                    style: TextStyle(fontSize: 16.0, color: Colors.white),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -967,67 +1142,16 @@ class Forum extends StatelessWidget {
           title: const Text('Forum'),
           backgroundColor: Colors.blue,
           leading: IconButton(
-            icon: const Icon(
-              Icons.menu,
-              semanticLabel: 'menu',
-            ),
             onPressed: () {
-              final RenderBox overlay =
-                  Overlay.of(context).context.findRenderObject() as RenderBox;
-              final Offset topLeft = Offset.zero;
-              showMenu(
-                context: context,
-                position: RelativeRect.fromLTRB(
-                  topLeft.dx,
-                  topLeft.dy,
-                  overlay.size.width - topLeft.dx,
-                  overlay.size.height - topLeft.dy,
-                ),
-                items: [
-                  const PopupMenuItem(
-                    child: Text('Home'),
-                    value: 1,
-                  ),
-                  const PopupMenuItem(
-                    child: Text('Curhat'),
-                    value: 2,
-                  ),
-                  const PopupMenuItem(
-                    child: Text('Konsultasi Psikolog'),
-                    value: 3,
-                  ),
-                  const PopupMenuItem(
-                    child: Text('Edit Profile'),
-                    value: 4,
-                  ),
-                ],
-                elevation: 8.0,
-              ).then((value) {
-                if (value != null) {
-                  if (value == 1) {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  }
-                  if(value == 2){
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Curhat()),
-                    );
-                  }
-                  if(value == 3){
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ListPsikolog()),
-                    );
-                  }
-                }
-              });
-            },
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            }, 
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            ),
           ),
         ),
         body: Container(
@@ -1314,7 +1438,6 @@ class FormKonsultasi extends StatelessWidget {
               }, 
               icon: const Icon(
                 Icons.arrow_back_ios_new_rounded,
-                  
               ),
             ),
         ),
@@ -1323,27 +1446,36 @@ class FormKonsultasi extends StatelessWidget {
             SizedBox(height: 10.0),
             Text("Masukkan Jam Mulai(Format 24 Jam berakhiran .00)"),
             const SizedBox(height: 5.0,),
-            FractionallySizedBox(
-              widthFactor: 0.8,
-              child: Container(
-                color: Colors.white,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                    color: Colors.black87,
-                  )
-                ),
-                child: TextField(
-                  controller: jamMulai,
-                  decoration: InputDecoration(
-                    hintText: "Masukkan jam mulai disini.."),
-                  onChanged: (value) {
-                    if(value.length == 5){
-                      hitungJam(jamMulai.text, jamAkhir);
-                    }else{
-                      jamAkhir.text = "";
-                    }
-                  },
+            Container(
+              alignment: Alignment.topCenter,
+              child: FractionallySizedBox(
+                widthFactor: 0.8,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: Colors.black87,
+                    )
+                  ),
+                  child: TextField(
+                    controller: jamMulai,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(5.0),
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide.none
+                    ),
+                      hintText: "Masukkan jam mulai disini.."
+                    ),
+                    onChanged: (value) {
+                      if(value.length == 5){
+                        hitungJam(jamMulai.text, jamAkhir);
+                      }else{
+                        jamAkhir.text = "";
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
@@ -1353,14 +1485,22 @@ class FormKonsultasi extends StatelessWidget {
             FractionallySizedBox(
               widthFactor: 0.8,
               child: Container(
-                color: Colors.white,
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(
                     color: Colors.black87,
                   )
                 ),
                 child: TextField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(5.0),
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide.none
+                    ),
+                    hintText: "Masukkan jam selesai disini.."
+                  ),
                   controller: jamAkhir,
                 ),
               ),
@@ -1371,8 +1511,8 @@ class FormKonsultasi extends StatelessWidget {
             FractionallySizedBox(
               widthFactor: 0.8,
               child: Container(
-                color: Colors.white,
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(
                     color: Colors.black87,
@@ -1381,6 +1521,11 @@ class FormKonsultasi extends StatelessWidget {
                 child: TextField(
                   controller: masalah,
                   decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(5.0),
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide.none
+                    ),
                     hintText: "Masukkan Masalah Anda Disini.."),
                 ),
               ),
@@ -1391,8 +1536,8 @@ class FormKonsultasi extends StatelessWidget {
             FractionallySizedBox(
               widthFactor: 0.8,
               child: Container(
-                color: Colors.white,
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(
                     color: Colors.black87,
@@ -1401,6 +1546,11 @@ class FormKonsultasi extends StatelessWidget {
                 child: TextField(
                   controller: pesanTambahan,
                   decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(5.0),
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderSide: BorderSide.none
+                    ),
                     hintText: "Masukkan Pesan Anda Disini.."),
                 ),
               ),
@@ -1454,69 +1604,17 @@ class ListPsikolog extends StatelessWidget {
         appBar: AppBar(
           title: const Text('List Psikolog'),
               leading: IconButton(
-
-                padding: EdgeInsets.all(3),
-                icon: const Icon(
-                  Icons.menu,
-                  semanticLabel: 'menu',
-                  
-                ),
-                onPressed: () {
-                  final RenderBox overlay =
-                      Overlay.of(context).context.findRenderObject() as RenderBox;
-                  final Offset topLeft = Offset.zero;
-                  showMenu(
-                    context: context,
-                    position: RelativeRect.fromLTRB(
-                      topLeft.dx,
-                      topLeft.dy,
-                      overlay.size.width - topLeft.dx,
-                      overlay.size.height - topLeft.dy,
-                    ),
-                    items: [
-                      const PopupMenuItem(
-                        child: Text('Home'),
-                        value: 1,
-                      ),
-                      const PopupMenuItem(
-                        child: Text('Curhat Anonim'),
-                        value: 2,
-                      ),
-                      const PopupMenuItem(
-                        child: Text('Forum'),
-                        value: 3,
-                      ),
-                      const PopupMenuItem(
-                        child: Text('Edit Profile'),
-                        value: 4,
-                      ),
-                    ],
-                    elevation: 8.0,
-                  ).then((value) {
-                    if (value != null) {
-                      if (value == 1) {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
-                      } else if (value == 2) {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Curhat()),
-                        );
-                      } else if(value == 3){
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Forum()),
-                        );
-                      }
-                    }
-                  });
-                },
-              ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            }, 
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            ),
+          ),
 
         ),
         body: StreamBuilder<QuerySnapshot>(
@@ -1529,51 +1627,65 @@ class ListPsikolog extends StatelessWidget {
               return Text("No data available");
             }
             return 
-                ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot document = snapshot.data!.docs[index];
-                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                    String namaPsikolog = data['Nama'];
-                    String deskripsi = data['Deskripsi'];
-    
-                    return Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.person,
-                            size: 100,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            namaPsikolog,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                Container(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 55),
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot document = snapshot.data!.docs[index];
+                      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                      String namaPsikolog = data['Nama'];
+                      String deskripsi = data['Deskripsi'];
+                    
+                      return FractionallySizedBox(
+                        widthFactor:0.8,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color:Colors.black54)
+                              ),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.person,
+                                    size: 100,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    namaPsikolog,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(deskripsi),
+                                  SizedBox(height: 10),
+                                  ElevatedButton(
+                                    onPressed: (){
+                                      psikologPilihan = namaPsikolog;
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const FormKonsultasi()),
+                                      );
+                                              }, 
+                                    child: Text("Pesan")),
+                                  const SizedBox(height: 5),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(deskripsi),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: (){
-                              psikologPilihan = namaPsikolog;
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const FormKonsultasi()),
-                              );
-                                      }, 
-                            child: Text("Pesan")),
-                        ],
-                      ),
-                    );
-                  },
-                // ),
-              //   const SizedBox(height: 55),
-              // ],
-            );
+                        ),
+                      );
+                    },
+                  // ),
+                              //   const SizedBox(height: 55),
+                              // ],
+                            ),
+                );
           },
           
         
@@ -1779,19 +1891,19 @@ class ChatRoom extends StatelessWidget {
                         }
                         return Align(
                           alignment: Alignment.centerRight,
-                          child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: 370,
-                            ),
-                            margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: Text(
-                              chat,
-                              style: TextStyle(fontSize: 16.0, color: Colors.white), 
+                          child: FractionallySizedBox(
+                            widthFactor: 0.75,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: Text(
+                                chat,
+                                style: TextStyle(fontSize: 16.0, color: Colors.white), 
+                              ),
                             ),
                           ),
                         );
@@ -1937,26 +2049,31 @@ class WaitingRoom extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10.0),
-                        // FractionallySizedBox(
-                        //   widthFactor: 0.8,
-                        //   heightFactor: 0.5,
-                        //   child: Container(
-                            
-                        //     alignment: Alignment.center,
-                        //     decoration: BoxDecoration(
-                        //       color: Colors.white,
-                        //       border: Border.all(
-                        //         color: Colors.black87,
-                        //       ),
-                        //       borderRadius: BorderRadius.circular(30),
-                        //     ),
-                        //     child: const Text(
-                        //       "IKLAN",
-                        //       style: TextStyle(
-                        //         fontSize: 20,
-                        //       ),
-                        //     )
-                        //   ),
+                        Container(
+                          alignment: Alignment.topCenter,
+                          // child: FractionallySizedBox(
+                          //   widthFactor: 0.8,
+                          //   heightFactor: 0.4,
+                          //   child: 
+                            child: Container(
+                              width: 350,
+                              height: 470,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black87,
+                                ),
+                                borderRadius: BorderRadius.circular(15)
+                              ),
+                              child: const Text(
+                                "IKLAN",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                )
+                              )
+                            )
+                        ),
                         // ),
                         const SizedBox(height: 10.0),
                         LoadingAnimationWidget.staggeredDotsWave(
@@ -1967,7 +2084,7 @@ class WaitingRoom extends StatelessWidget {
 
                     );
                   } else {
-                    return const Text(' ');
+                    return const Text(' . ');
                   }
                 }
               },
@@ -2326,7 +2443,9 @@ class listPendengar extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                     child: Container(
+                      height: 40,
                       padding: const EdgeInsets.all(5),
+                      alignment: Alignment.centerLeft,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -2338,7 +2457,6 @@ class listPendengar extends StatelessWidget {
                         namaPendengar,
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -2368,54 +2486,18 @@ class Curhat extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Fitur Curhat"),
           leading: IconButton(
-            icon: const Icon(
-              Icons.menu,
-              semanticLabel: 'menu',
-            ),
             onPressed: () {
-              final RenderBox overlay =
-                  Overlay.of(context).context.findRenderObject() as RenderBox;
-              final Offset topLeft = Offset.zero;
-              showMenu(
-                context: context,
-                position: RelativeRect.fromLTRB(
-                  topLeft.dx,
-                  topLeft.dy,
-                  overlay.size.width - topLeft.dx,
-                  overlay.size.height - topLeft.dy,
-                ),
-                items: [
-                  const PopupMenuItem(
-                    child: Text('Home'),
-                    value: 1,
-                  ),
-                  const PopupMenuItem(
-                    child: Text('Konsultasi Psikolog'),
-                    value: 2,
-                  ),
-                  const PopupMenuItem(
-                    child: Text('Forum'),
-                    value: 3,
-                  ),
-                  const PopupMenuItem(
-                    child: Text('Edit Profile'),
-                    value: 4,
-                  ),
-                ],
-                elevation: 8.0,
-              ).then((value) {
-                if (value != null) {
-                  if (value == 1) {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  }
-                }
-              });
-            },
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            }, 
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            ),
           ),
+
         ),
         body: Container(
           alignment: Alignment.center,
@@ -2638,5 +2720,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
