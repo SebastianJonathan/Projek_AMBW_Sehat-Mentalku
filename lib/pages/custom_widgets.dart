@@ -2,8 +2,8 @@ import 'package:appsehat/dataclass.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'dbservices.dart';
-import 'firebase_options.dart';
+import '../dbservices.dart';
+import '../firebase_options.dart';
 
 
 class Background extends StatelessWidget{
