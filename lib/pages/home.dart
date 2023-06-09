@@ -240,10 +240,6 @@ class HomePage extends StatelessWidget {
                     child: Text('Forum'),
                     value: 3,
                   ),
-                  const PopupMenuItem(
-                    child: Text('Edit Profile'),
-                    value: 4,
-                  ),
                 ],
                 elevation: 8.0,
               ).then((value) {
@@ -325,87 +321,94 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 5.0),
             FractionallySizedBox(
               widthFactor: 0.8,
-              child: Container(
-                height: 200,
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5), //color of shadow
-                      spreadRadius: 3, //spread radius
-                      blurRadius: 7, // blur radius
-                      offset: const Offset(0, 1), // changes position of shadow
-                    )
-                  ],
-                  border: Border.all(
-                    color: Colors.black38,
-            
-                  )
-            
-                ),
-                alignment: Alignment.centerLeft,
-                child: StreamBuilder<List<Map<String, dynamic>>>(
-                  stream: getDatas("listKonsultasi"),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text("Error: ${snapshot.error}");
-                    } else if (snapshot.hasData) {
-                      List<Map<String, dynamic>> dataList = snapshot.data!;
-                      List<Widget> appointmentWidgets = [];
-                      for (var data in dataList) {
-                        String namaPsikolog = data['Psikolog'];
-                        String jamMulai = data['JamMulai'];
-                        String jamAkhir = data['JamBerakhir'];
-                        String user = data['User'];
-                        if (user == loggedIn) {
-                          appointmentWidgets.add(
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: Text(
-                                    "Psikolog: " + namaPsikolog,
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HalamanKonsultasi()),
+                  );
+                },
+                child: Container(
+                  height: 200,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), //color of shadow
+                        spreadRadius: 3, //spread radius
+                        blurRadius: 7, // blur radius
+                        offset: const Offset(0, 1), // changes position of shadow
+                      )
+                    ],
+                    border: Border.all(
+                      color: Colors.black38,
+                    ),
+                  ),
+                  alignment: Alignment.centerLeft,
+                  child: StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: getDatas("listKonsultasi"),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else if (snapshot.hasData) {
+                        List<Map<String, dynamic>> dataList = snapshot.data!;
+                        List<Widget> appointmentWidgets = [];
+                        for (var data in dataList) {
+                          String namaPsikolog = data['Psikolog'];
+                          String jamMulai = data['JamMulai'];
+                          String jamAkhir = data['JamBerakhir'];
+                          String user = data['User'];
+                          if (user == loggedIn) {
+                            appointmentWidgets.add(
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Text(
+                                      "Psikolog: " + namaPsikolog,
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: Text(
-                                    "Akan Mulai Pada " + jamMulai,
-                                    style: TextStyle(fontSize: 16),
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Text(
+                                      "Akan Mulai Pada " + jamMulai,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: Text(
-                                    "Berakhir pada " + jamAkhir,
-                                    style: TextStyle(fontSize: 16),
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Text(
+                                      "Berakhir pada " + jamAkhir,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
+                                ],
+                              ),
+                            );
+                          }
                         }
-                      }
-                      return Container(
-                        height: 200,
-                        child: SingleChildScrollView(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: appointmentWidgets,
+                        return Container(
+                          height: 200,
+                          child: SingleChildScrollView(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: appointmentWidgets,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    } else {
-                      return Text("No data available");
-                    }
-                  },
+                        );
+                      } else {
+                        return Text("No data available");
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
