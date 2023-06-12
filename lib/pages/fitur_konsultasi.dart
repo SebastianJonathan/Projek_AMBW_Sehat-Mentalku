@@ -678,40 +678,46 @@ class PaymentPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    pesanPsikolog(context, "Gopay");
-                  },
-                  child: Text('GoPay'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    pesanPsikolog(context, "Visa");
-                  },
-                  child: Text('Visa'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    pesanPsikolog(context, "Mastercard");
-                  },
-                  child: Text('Mastercard'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    pesanPsikolog(context, "Ovo");
-                  },
-                  child: Text('OVO'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    pesanPsikolog(context, "Shopeepay");
-                  },
-                  child: Text('ShopeePay'),
-                ),
-              ],
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: Wrap(
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                // alignment: Alignment.,
+                alignment: WrapAlignment.spaceEvenly,
+                // runAlignment: WrapAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      pesanPsikolog(context, "Gopay");
+                    },
+                    child: Text('GoPay'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      pesanPsikolog(context, "Visa");
+                    },
+                    child: Text('Visa'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      pesanPsikolog(context, "Mastercard");
+                    },
+                    child: Text('Mastercard'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      pesanPsikolog(context, "Ovo");
+                    },
+                    child: Text('OVO'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      pesanPsikolog(context, "Shopeepay");
+                    },
+                    child: Text('ShopeePay'),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
