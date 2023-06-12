@@ -80,16 +80,29 @@ class Iklan extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Container(
-        color: Colors.white,
+        padding: const EdgeInsets.all(5),
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.center,
         height: 50,
-        child: const Text(
-          "IKLAN", 
-          style: TextStyle(
-            fontSize: 20,
+        // child: 
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Container(
+          decoration: const BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            image:  AssetImage("assets/iklan1.jpg"),
+            fit: BoxFit.cover,
           ),
         ),
+        ),
+        // const Text(
+        //   "IKLAN", 
+        //   style: TextStyle(
+        //     fontSize: 20,
+        //   ),
+        // ),
       );
   }
 }

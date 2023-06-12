@@ -314,6 +314,32 @@ class ChatRoom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            backgroundColor: Colors.white,
+            title: Text('Peringatan'),
+            content: Text('Hati-hati dalam berbagi informasi.\nJangan menyebarkan informasi pribadi anda.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    });
+
+
+
     final chat = TextEditingController();
     return Background(
       child: Scaffold(
@@ -383,9 +409,10 @@ class ChatRoom extends StatelessWidget {
                         }
                         return Align(
                           alignment: Alignment.centerRight,
-                          child: FractionallySizedBox(
-                            widthFactor: 0.75,
-                            child: Container(
+                          child: Container(
+                            constraints: BoxConstraints(
+                              maxWidth: 370,
+                            ),
                               margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                               padding: EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
@@ -397,7 +424,6 @@ class ChatRoom extends StatelessWidget {
                                 style: TextStyle(fontSize: 16.0, color: Colors.white), 
                               ),
                             ),
-                          ),
                         );
                       }
                       return const SizedBox();
@@ -466,7 +492,6 @@ class ChatRoom extends StatelessWidget {
     );
   }
 }
-
 
 class WaitingRoom extends StatelessWidget {
   const WaitingRoom({Key? key}) : super(key: key);
@@ -559,14 +584,18 @@ class WaitingRoom extends StatelessWidget {
                                 border: Border.all(
                                   color: Colors.black87,
                                 ),
-                                borderRadius: BorderRadius.circular(15)
-                              ),
-                              child: const Text(
-                                "IKLAN",
-                                style: TextStyle(
-                                  fontSize: 24,
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                  image: AssetImage("assets/iklan2.jpg"),
+                                  fit: BoxFit.fill,
                                 )
-                              )
+                              ),
+                              // child: const Text(
+                              //   "IKLAN",
+                              //   style: TextStyle(
+                              //     fontSize: 24,
+                              //   )
+                              // )
                             )
                         ),
                         // ),

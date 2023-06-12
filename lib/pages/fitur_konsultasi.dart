@@ -425,6 +425,7 @@ class HalamanHistory extends StatelessWidget {
             );
           },
         ),
+        bottomSheet: const Iklan(),
       ),
     );
   }
@@ -516,6 +517,7 @@ class HalamanKonsultasi extends StatelessWidget {
             );
           },
         ),
+        bottomSheet: const Iklan(),
       ),
     );
   }

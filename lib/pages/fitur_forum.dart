@@ -338,56 +338,59 @@ class HalamanForum extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             }
     
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot document = snapshot.data!.docs[index];
-                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                String username = data['Username'];
-                String isiForum = data['Isi'];
-    
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          username,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+            return Container(
+              padding: const EdgeInsets.fromLTRB(0,0,0,55),
+              child: ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot document = snapshot.data!.docs[index];
+                  Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                  String username = data['Username'];
+                  String isiForum = data['Isi'];
+                
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            username,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          isiForum,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(height: 16),
-                        GestureDetector(
-                          onTap: () {
-                            userComment = username;
-                            isi = isiForum;
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ViewComment()),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.comment),
-                              SizedBox(width: 8),
-                              Text('comment'),
-                            ],
+                          SizedBox(height: 8),
+                          Text(
+                            isiForum,
+                            style: TextStyle(fontSize: 16),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 16),
+                          GestureDetector(
+                            onTap: () {
+                              userComment = username;
+                              isi = isiForum;
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ViewComment()),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.comment),
+                                SizedBox(width: 8),
+                                Text('comment'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           },
         ),
@@ -665,46 +668,49 @@ class ListArticle extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             }
     
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot document = snapshot.data!.docs[index];
-                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                String judul = data['Judul'];
-                String ringkasan = data['Ringkasan'];
-                return Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(
-                          judul,
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          ringkasan,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      ButtonBar(
-                        children: <Widget>[
-                          ElevatedButton(
-                            child: const Text('Read'),
-                            onPressed: () {
-                              judulArticle = judul;
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ViewArticle()),
-                              );
-                            },
+            return Container(
+              padding: const EdgeInsets.fromLTRB(0,0,0,55),
+              child: ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot document = snapshot.data!.docs[index];
+                  Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                  String judul = data['Judul'];
+                  String ringkasan = data['Ringkasan'];
+                  return Card(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(
+                            judul,
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+                          subtitle: Text(
+                            ringkasan,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        ButtonBar(
+                          children: <Widget>[
+                            ElevatedButton(
+                              child: const Text('Read'),
+                              onPressed: () {
+                                judulArticle = judul;
+                                Navigator.pop(context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ViewArticle()),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             );
           },
         ),
@@ -1055,46 +1061,49 @@ class ListGroupPage extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             }
     
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot document = snapshot.data!.docs[index];
-                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                String nama = data['Nama'];
-                String info = data['Deskripsi'];
-                return Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(
-                          nama,
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          info,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      ButtonBar(
-                        children: <Widget>[
-                          ElevatedButton(
-                            child: const Text('Join'),
-                            onPressed: () {
-                              namaGrup = nama;
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ChatGroupRoom()),
-                              );
-                            },
+            return Container(
+              padding: const EdgeInsets.fromLTRB(0,0,0,55),
+              child: ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot document = snapshot.data!.docs[index];
+                  Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                  String nama = data['Nama'];
+                  String info = data['Deskripsi'];
+                  return Card(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(
+                            nama,
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+                          subtitle: Text(
+                            info,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        ButtonBar(
+                          children: <Widget>[
+                            ElevatedButton(
+                              child: const Text('Join'),
+                              onPressed: () {
+                                namaGrup = nama;
+                                Navigator.pop(context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ChatGroupRoom()),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             );
           },
         ),
