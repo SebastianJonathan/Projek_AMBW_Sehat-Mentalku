@@ -122,7 +122,7 @@ class AddForum extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: Text("Add Article"),
+          title: Text("Add Post"),
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -234,7 +234,7 @@ class ViewComment extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
     
             return ListView.builder(
@@ -243,10 +243,11 @@ class ViewComment extends StatelessWidget {
                 DocumentSnapshot document = snapshot.data!.docs[index];
                 Map<String, dynamic> data = document.data() as Map<String, dynamic>;
                 String users = data['Username'];
-                String isi = data['Isi'];
+                String isii = data['Isi'];
                 String userNow = data['UserComment'];
                 String comment = data['Comment'];
-                if (users == userComment && isi == isi) {
+                print(isi);
+                if (users == userComment && isii == isi) {
                   return Card(
                     elevation: 2.0,
                     shape: RoundedRectangleBorder(
@@ -334,7 +335,7 @@ class HalamanForum extends StatelessWidget {
             }
     
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
     
             return ListView.builder(
@@ -343,7 +344,7 @@ class HalamanForum extends StatelessWidget {
                 DocumentSnapshot document = snapshot.data!.docs[index];
                 Map<String, dynamic> data = document.data() as Map<String, dynamic>;
                 String username = data['Username'];
-                String isi = data['Isi'];
+                String isiForum = data['Isi'];
     
                 return Card(
                   child: Padding(
@@ -360,14 +361,14 @@ class HalamanForum extends StatelessWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          isi,
+                          isiForum,
                           style: TextStyle(fontSize: 16),
                         ),
                         SizedBox(height: 16),
                         GestureDetector(
                           onTap: () {
                             userComment = username;
-                            isi = isi;
+                            isi = isiForum;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
@@ -569,7 +570,7 @@ class ViewArticle extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
     
             return ListView.builder(
@@ -661,7 +662,7 @@ class ListArticle extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
     
             return ListView.builder(
@@ -887,7 +888,7 @@ class ChatGroupRoom extends StatelessWidget {
                     return Text("Error: ${snapshot.error}");
                   }
                   if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -980,18 +981,20 @@ class ChatGroupRoom extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.send),
                       onPressed: () {
-                        DateTime currentTime = DateTime.now();
-                        CollectionReference users = FirebaseFirestore.instance.collection('chatGroup');
-                        DocumentReference doc = users.doc(currentTime.toString());
-                
-                        Map<String, dynamic> data = {
-                          'Sender': loggedIn,
-                          'Group': namaGrup,
-                          'message': chat.text
-                        };
-                
-                        doc.set(data);
-                        chat.text = "";
+                        if(chat.text != ""){
+                          DateTime currentTime = DateTime.now();
+                          CollectionReference users = FirebaseFirestore.instance.collection('chatGroup');
+                          DocumentReference doc = users.doc(currentTime.toString());
+                  
+                          Map<String, dynamic> data = {
+                            'Sender': loggedIn,
+                            'Group': namaGrup,
+                            'message': chat.text
+                          };
+                  
+                          doc.set(data);
+                          chat.text = "";
+                        }
                       },
                     ),
                     IconButton(
@@ -1049,7 +1052,7 @@ class ListGroupPage extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
     
             return ListView.builder(

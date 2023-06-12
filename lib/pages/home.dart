@@ -94,19 +94,21 @@ class MyApp extends StatelessWidget {
                         ),
                         child: const Text('Register'),
                         onPressed: () {
-                          final newUser = user(
-                            username: _usernameController.text,
-                            password: _passwordController.text,
-                            status: "Active",
-                          );
-                          Database.addData(users: newUser);
-                          _usernameController.text = "";
-                          _passwordController.text = "";
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MyApp()),
-                          );
+                          if(_usernameController.text != "" && _passwordController.text != ""){
+                            final newUser = user(
+                              username: _usernameController.text,
+                              password: _passwordController.text,
+                              status: "Active",
+                            );
+                            Database.addData(users: newUser);
+                            _usernameController.text = "";
+                            _passwordController.text = "";
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MyApp()),
+                            );
+                          }
                         },
                       ),
                     ),
@@ -413,7 +415,7 @@ class HomePage extends StatelessWidget {
                           ),
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return Center(child: CircularProgressIndicator());
                       }
                     },
                   ),
@@ -510,7 +512,7 @@ class HomePage extends StatelessWidget {
                           ),
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return Center(child: CircularProgressIndicator());
                       }
                     },
                   ),

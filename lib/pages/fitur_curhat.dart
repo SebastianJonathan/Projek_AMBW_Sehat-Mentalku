@@ -40,7 +40,7 @@ class listPendengar extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
@@ -331,7 +331,7 @@ class ChatRoom extends StatelessWidget {
                     return Text("Error: ${snapshot.error}");
                   }
                   if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -423,18 +423,20 @@ class ChatRoom extends StatelessWidget {
                     IconButton (
                       icon: Icon(Icons.send),
                       onPressed: () {
-                        DateTime currentTime = DateTime.now();
-                        CollectionReference users = FirebaseFirestore.instance.collection('chatCurhat');
-                        DocumentReference doc = users.doc(currentTime.toString());
+                        if(chat.text != ""){
+                          DateTime currentTime = DateTime.now();
+                          CollectionReference users = FirebaseFirestore.instance.collection('chatCurhat');
+                          DocumentReference doc = users.doc(currentTime.toString());
+                    
+                          Map<String, dynamic> data = {
+                            'Sender' : loggedIn,
+                            'Reciever' : lawanChat,
+                            'message' : chat.text
+                          };
                   
-                        Map<String, dynamic> data = {
-                          'Sender' : loggedIn,
-                          'Reciever' : lawanChat,
-                          'message' : chat.text
-                        };
-                
-                        doc.set(data);
-                        chat.text = "";
+                          doc.set(data);
+                          chat.text = "";
+                        }
                       },
                     ),
                     IconButton(
@@ -513,7 +515,7 @@ class WaitingRoom extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,

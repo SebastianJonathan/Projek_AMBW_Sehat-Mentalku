@@ -44,19 +44,48 @@ class MyDatePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Tanggal"),
-        SizedBox(height: 10.0),
-        TextField(
-          controller: dateTimeController,
-        ),
-        SizedBox(height: 10.0),
+        Text("Pilih Tanggal Konsultasi"),
+        SizedBox(height: 5.0),
+        FractionallySizedBox(
+          widthFactor: 0.8,
+          alignment: Alignment.center,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: Colors.black87,
+                          )
+                        ),
+                        child: TextField(
+                          controller: dateTimeController,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(5.0),
+                            hintText: "Pilih Tanggal Konsultasi",
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide.none,
+                            )
+                          ),
+                        ),
+                      ),
+              ),
+              const SizedBox(width: 5),
         IconButton(
           icon: Icon(Icons.calendar_today),
           onPressed: () {
             _selectDate(context);
           }
         ),
-        SizedBox(height: 20.0),
+
+
+
+            ],
+          ),
+        ),
+        SizedBox(height: 10.0),
       ],
     );
   }
@@ -192,7 +221,7 @@ class ChatRoomPsikolog extends StatelessWidget {
                     return Text("Error: ${snapshot.error}");
                   }
                   if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -284,18 +313,20 @@ class ChatRoomPsikolog extends StatelessWidget {
                     IconButton (
                       icon: Icon(Icons.send),
                       onPressed: () {
-                        DateTime currentTime = DateTime.now();
-                        CollectionReference users = FirebaseFirestore.instance.collection('chatPsikolog');
-                        DocumentReference doc = users.doc(currentTime.toString());
+                        if(chat.text != ""){
+                          DateTime currentTime = DateTime.now();
+                          CollectionReference users = FirebaseFirestore.instance.collection('chatPsikolog');
+                          DocumentReference doc = users.doc(currentTime.toString());
+                    
+                          Map<String, dynamic> data = {
+                            'Sender' : loggedIn,
+                            'Reciever' : namaPsikolog,
+                            'message' : chat.text
+                          };
                   
-                        Map<String, dynamic> data = {
-                          'Sender' : loggedIn,
-                          'Reciever' : namaPsikolog,
-                          'message' : chat.text
-                        };
-                
-                        doc.set(data);
-                        chat.text = "";
+                          doc.set(data);
+                          chat.text = "";
+                        }
                       },
                     ),
                     IconButton(
@@ -329,56 +360,71 @@ class ChatRoomPsikolog extends StatelessWidget {
 class HalamanHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar History'),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('listHistory').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Terjadi kesalahan');
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot document = snapshot.data!.docs[index];
-              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-              String namaPsi = data['Psikolog'];
-              String userNows = data['User'];
-              String tanggal = data['Tanggal'];
-              if (userNows == loggedIn){
-                return Card(
-                  margin: EdgeInsets.all(10),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          namaPsi,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text('Daftar History'),
+          leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          }, 
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+          ),
+        ),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('listHistory').snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text('Terjadi kesalahan');
+            }
+    
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot document = snapshot.data!.docs[index];
+                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                String namaPsi = data['Psikolog'];
+                String userNows = data['User'];
+                String tanggal = data['Tanggal'];
+                if (userNows == loggedIn){
+                  return Card(
+                    margin: EdgeInsets.all(10),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            namaPsi,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 5),
-                        Text('Tanggal: ' + tanggal),
-                        SizedBox(height: 10),
-                      ],
+                          SizedBox(height: 5),
+                          Text('Tanggal: ' + tanggal),
+                          SizedBox(height: 10),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }else{
-                return SizedBox();
-              }
-            },
-          );
-        },
+                  );
+                }else{
+                  return SizedBox();
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -387,74 +433,89 @@ class HalamanHistory extends StatelessWidget {
 class HalamanKonsultasi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Konsultasi'),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('listKonsultasi').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Terjadi kesalahan');
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot document = snapshot.data!.docs[index];
-              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-              String namaPsi = data['Psikolog'];
-              String jamMulai = data['JamMulai'];
-              String jamBerakhir = data['JamBerakhir'];
-              String userNows = data['User'];
-              String tanggal = data['Tanggal'];
-              if (userNows == loggedIn){
-                return Card(
-                  margin: EdgeInsets.all(10),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          namaPsi,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Text('Tanggal: ' + tanggal),
-                        SizedBox(height: 10),
-                        Text('Jam Konsultasi: ' + jamMulai + ' - ' + jamBerakhir),
-                        SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            namaPsikolog = namaPsi;
-                            mulai = jamMulai;
-                            akhir = jamBerakhir;
-                            dateTime = tanggal;
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const ChatRoomPsikolog()),
-                            );
-                          },
-                          child: Text('Start Konsultasi'),
-                        ),
-                      ],
-                    ),
-                  ),
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text('Daftar Konsultasi'),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
                 );
-              }else{
-                return SizedBox();
-              }
-            },
-          );
-        },
+              }, 
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+              ),
+            ),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('listKonsultasi').snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text('Terjadi kesalahan');
+            }
+    
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot document = snapshot.data!.docs[index];
+                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                String namaPsi = data['Psikolog'];
+                String jamMulai = data['JamMulai'];
+                String jamBerakhir = data['JamBerakhir'];
+                String userNows = data['User'];
+                String tanggal = data['Tanggal'];
+                if (userNows == loggedIn){
+                  return Card(
+                    margin: EdgeInsets.all(10),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            namaPsi,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text('Tanggal: ' + tanggal),
+                          SizedBox(height: 10),
+                          Text('Jam Konsultasi: ' + jamMulai + ' - ' + jamBerakhir),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              namaPsikolog = namaPsi;
+                              mulai = jamMulai;
+                              akhir = jamBerakhir;
+                              dateTime = tanggal;
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const ChatRoomPsikolog()),
+                              );
+                            },
+                            child: Text('Start Konsultasi'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }else{
+                  return SizedBox();
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -702,6 +763,7 @@ class FormKonsultasi extends StatelessWidget {
         body: Column(
           children: [
             SizedBox(height: 10.0),
+            MyDatePicker(),
             Text("Masukkan Jam Mulai(Format 24 Jam berakhiran .00)"),
             const SizedBox(height: 5.0,),
             Container(
@@ -814,7 +876,7 @@ class FormKonsultasi extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10.0,),
-            MyDatePicker(),
+
             SizedBox(
               width: 90,
               height: 35,
@@ -884,7 +946,7 @@ class ListPsikolog extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
             return 
                 Container(
