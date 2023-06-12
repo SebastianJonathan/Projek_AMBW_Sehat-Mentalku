@@ -40,7 +40,7 @@ class listPendengar extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return Text("No data available");
+              return CircularProgressIndicator();
             }
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
@@ -331,7 +331,7 @@ class ChatRoom extends StatelessWidget {
                     return Text("Error: ${snapshot.error}");
                   }
                   if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-                    return Text("No data available");
+                    return CircularProgressIndicator();
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -513,7 +513,7 @@ class WaitingRoom extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return Text("No data available");
+              return CircularProgressIndicator();
             }
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,

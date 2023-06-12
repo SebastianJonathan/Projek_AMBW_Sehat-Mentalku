@@ -16,6 +16,51 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 String namaPsikolog = "";
 String mulai = "";
 String akhir = "";
+String dateTime = "";
+final dateTimeController = TextEditingController();
+
+class MyDatePicker extends StatelessWidget {
+
+  Future<DateTime?> showMyDatePicker(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2023),
+    lastDate: DateTime(2100),
+  );
+
+  dateTime = picked.toString().substring(0,10);
+  return picked;
+}
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showMyDatePicker(context);
+
+    if (picked != null) {
+      dateTimeController.text = dateTime;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Tanggal"),
+        SizedBox(height: 10.0),
+        TextField(
+          controller: dateTimeController,
+        ),
+        SizedBox(height: 10.0),
+        IconButton(
+          icon: Icon(Icons.calendar_today),
+          onPressed: () {
+            _selectDate(context);
+          }
+        ),
+        SizedBox(height: 20.0),
+      ],
+    );
+  }
+}
 
 class FeedbackPagePsikolog extends StatelessWidget {
   const FeedbackPagePsikolog({super.key});
@@ -38,6 +83,17 @@ class FeedbackPagePsikolog extends StatelessWidget {
     for(final document in snapshot.docs){
       await document.reference.delete();
     }
+    CollectionReference users = FirebaseFirestore.instance.collection('listHistory');
+    Map<String, dynamic> data = {
+      'User' : loggedIn,
+      'Psikolog' : namaPsikolog,
+      'Tanggal' : dateTime,
+    };
+
+    users
+      .add(data)
+      .then((value) => print('Data inserted successfully.'))
+      .catchError((error) => print('Failed to insert data: $error'));
   }
 
   @override
@@ -136,7 +192,7 @@ class ChatRoomPsikolog extends StatelessWidget {
                     return Text("Error: ${snapshot.error}");
                   }
                   if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-                    return Text("No data available");
+                    return CircularProgressIndicator();
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -270,6 +326,64 @@ class ChatRoomPsikolog extends StatelessWidget {
   }
 }
 
+class HalamanHistory extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Daftar History'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('listHistory').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Terjadi kesalahan');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              String namaPsi = data['Psikolog'];
+              String userNows = data['User'];
+              String tanggal = data['Tanggal'];
+              if (userNows == loggedIn){
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          namaPsi,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text('Tanggal: ' + tanggal),
+                        SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                );
+              }else{
+                return SizedBox();
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
 class HalamanKonsultasi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -296,6 +410,7 @@ class HalamanKonsultasi extends StatelessWidget {
               String jamMulai = data['JamMulai'];
               String jamBerakhir = data['JamBerakhir'];
               String userNows = data['User'];
+              String tanggal = data['Tanggal'];
               if (userNows == loggedIn){
                 return Card(
                   margin: EdgeInsets.all(10),
@@ -312,6 +427,8 @@ class HalamanKonsultasi extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 5),
+                        Text('Tanggal: ' + tanggal),
+                        SizedBox(height: 10),
                         Text('Jam Konsultasi: ' + jamMulai + ' - ' + jamBerakhir),
                         SizedBox(height: 10),
                         ElevatedButton(
@@ -319,6 +436,7 @@ class HalamanKonsultasi extends StatelessWidget {
                             namaPsikolog = namaPsi;
                             mulai = jamMulai;
                             akhir = jamBerakhir;
+                            dateTime = tanggal;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
@@ -367,7 +485,6 @@ class PaymentPage extends StatelessWidget {
     if(data.isNotEmpty){
       for(var datas in data){
         if(datas['Psikolog'] == psikologPilihan){
-          print('a');
           if(int.parse(datas['JamMulai'].substring(0,2)) <= int.parse(jamMulaii.substring(0,2)) && int.parse(datas['JamBerakhir'].substring(0,2)) > int.parse(jamMulaii.substring(0,2))){
             ada = true;
             if(int.parse(datas['JamMulai'].substring(0,2)) <= int.parse(jamAkhirr.substring(0,2)) && int.parse(datas['JamBerakhir'].substring(0,2)) > int.parse(jamAkhirr.substring(0,2))){
@@ -385,6 +502,7 @@ class PaymentPage extends StatelessWidget {
           'JamBerakhir' : jamAkhirr,
           'Masalah' : masalahKu,
           'Pesan' : pesanKu,
+          'Tanggal' : dateTime,
           'PaymentMode' : paymentMode
         };
 
@@ -452,6 +570,16 @@ class PaymentPage extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Psikolog : ' + psikologPilihan,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Tanggal : ' + dateTime,
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -539,8 +667,12 @@ class FormKonsultasi extends StatelessWidget {
   SizedBox hitungJam(String jamAwal, TextEditingController text){
     int jamAkhir = int.parse(jamAwal.substring(0,2));
     jamAkhir += 1;
-    text.text = jamAkhir.toString() + ".00";
-    return SizedBox(height: 0,);
+    if (jamAkhir.toString().length == 1){
+      text.text = "0" + jamAkhir.toString() + ".00";
+    }else{
+      text.text = jamAkhir.toString() + ".00";
+    }
+    return SizedBox();
   }
 
   @override
@@ -682,6 +814,7 @@ class FormKonsultasi extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10.0,),
+            MyDatePicker(),
             SizedBox(
               width: 90,
               height: 35,
@@ -751,7 +884,7 @@ class ListPsikolog extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return Text("No data available");
+              return CircularProgressIndicator();
             }
             return 
                 Container(

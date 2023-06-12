@@ -234,7 +234,7 @@ class ViewComment extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return Text("No data available");
+              return CircularProgressIndicator();
             }
     
             return ListView.builder(
@@ -569,7 +569,7 @@ class ViewArticle extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return Text("No data available");
+              return CircularProgressIndicator();
             }
     
             return ListView.builder(
@@ -661,7 +661,7 @@ class ListArticle extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return Text("No data available");
+              return CircularProgressIndicator();
             }
     
             return ListView.builder(
@@ -887,7 +887,7 @@ class ChatGroupRoom extends StatelessWidget {
                     return Text("Error: ${snapshot.error}");
                   }
                   if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-                    return Text("No data available");
+                    return CircularProgressIndicator();
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -1049,7 +1049,7 @@ class ListGroupPage extends StatelessWidget {
               return Text("Error: ${snapshot.error}");
             }
             if (!snapshot.hasData || snapshot.data?.docs.isEmpty == true) {
-              return Text("No data available");
+              return CircularProgressIndicator();
             }
     
             return ListView.builder(
